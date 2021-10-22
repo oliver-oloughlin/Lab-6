@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$/dat155-camera-system-assignment/dat155-camera-system" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/dat155-camera-system-assignment/dat155-camera-system/lib/engine" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/dat155-camera-system-assignment/dat155-camera-system/lib/engine/lib/gl-matrix" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
 </project>

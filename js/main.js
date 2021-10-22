@@ -56,7 +56,7 @@ async function main() {
      * Add light
      */
     const directionalLight = new DirectionalLight(0xffffff);
-    directionalLight.position.set(3000, 4000, 0);
+    directionalLight.position.set(1000, 1000, 0);
     directionalLight.castShadow = true;
 
     //Set up shadow properties for the light
@@ -96,11 +96,6 @@ async function main() {
         height: 20
     });
 
-    const grassTexture1 = new TextureLoader().load('resources/textures/grass_01.jpg');
-    grassTexture1.wrapS = RepeatWrapping;
-    grassTexture1.wrapT = RepeatWrapping;
-    grassTexture1.repeat.set(5000 / width, 5000 / width);
-
     const grassTexture = new TextureLoader().load('resources/textures/grass_02.png');
     grassTexture.wrapS = RepeatWrapping;
     grassTexture.wrapT = RepeatWrapping;
@@ -115,7 +110,6 @@ async function main() {
     snowyRockTexture.wrapS = RepeatWrapping;
     snowyRockTexture.wrapT = RepeatWrapping;
     snowyRockTexture.repeat.set(1500 / width, 1500 / width);
-
 
     const splatMap = new TextureLoader().load('resources/images/custom_heightmap2.png');
 
@@ -312,13 +306,13 @@ async function main() {
 
     const velocity = new Vector3(0.0, 0.0, 0.0);
 
-    const timeMax = 2400;
-    const timeSpeed = 0.1;
+    const timeMax = 24 * 60 * 60 * 1000; // 1 døgn = 24 timer, realtime
+    const timeSpeed = 24 * 60 * 4; // Kompenserer slik at 1 døgn = 15 sekunder
     const lightDistance = 1000;
     let nowPI = 0;
     let sinx = 0;
     let siny = -1;
-    let time = 0;
+    let time = timeMax / 2;
     let timeFraction = 0;
     let lightPosY;
     let lightPosX;
@@ -333,7 +327,7 @@ async function main() {
 
         if (time > timeMax) time = 0;
 
-        if (time == 0) {
+        if (time === 0) {
             timeFraction = 0;
         } else {
             timeFraction = time / timeMax;
@@ -383,7 +377,7 @@ async function main() {
 
         requestAnimationFrame(loop);
 
-    };
+    }
 
     loop(performance.now());
 
