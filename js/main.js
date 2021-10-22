@@ -9,6 +9,7 @@ import {
     DirectionalLight,
     Vector3,
     AxesHelper,
+    SphereBufferGeometry,
 } from './lib/three.module.js';
 
 import Utilities from './lib/Utilities.js';
@@ -18,6 +19,7 @@ import TextureSplattingMaterial from './materials/TextureSplattingMaterial.js';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry.js';
 import { GLTFLoader } from './loaders/GLTFLoader.js';
 import { SimplexNoise } from './lib/SimplexNoise.js';
+import Skybox from './shaders/Skybox.js';
 
 async function main() {
 
@@ -126,6 +128,10 @@ async function main() {
     terrain.receiveShadow = true;
 
     scene.add(terrain);
+
+    const skybox = new Mesh(new SphereBufferGeometry(100.0, 64, 64), new Skybox());
+    scene.add(skybox);
+    skybox.position.y = 0; // fjern når ferdig med testing
 
     /**
      * Add trees
@@ -342,6 +348,10 @@ async function main() {
         lightPosY = lightDistance * siny;
 
         directionalLight.position.set(lightPosX, lightPosY);
+
+        // feed uniform med (lightPosX, lightPosY) til skybox!
+        //this.skybox.material.uniforms.sunDirection.value = (lightPosX, lightPosY);
+
 
         const moveSpeed = move.speed * delta;
 
