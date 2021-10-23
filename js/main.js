@@ -14,12 +14,12 @@ import {
 
 import Utilities from './lib/Utilities.js';
 import MouseLookController from './controls/MouseLookController.js';
-
 import TextureSplattingMaterial from './materials/TextureSplattingMaterial.js';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry.js';
 import { GLTFLoader } from './loaders/GLTFLoader.js';
 import { SimplexNoise } from './lib/SimplexNoise.js';
 import Skybox from './shaders/Skybox.js';
+import DayCycleController from './controls/DayCycleController.js';
 
 async function main() {
 
@@ -312,16 +312,9 @@ async function main() {
 
     const velocity = new Vector3(0.0, 0.0, 0.0);
 
-    const timeMax = 24 * 60 * 60 * 1000; // 1 døgn = 24 timer, realtime
-    const timeSpeed = 24 * 60 * 4; // Kompenserer slik at 1 døgn = 15 sekunder
+    const timeSpeed = 24 * 60 * 4;
     const lightDistance = 1000;
-    let nowPI = 0;
-    let sinx = 0;
-    let siny = -1;
-    let time = timeMax / 2;
-    let timeFraction = 0;
-    let lightPosY;
-    let lightPosX;
+    const dayCycleController = new DayCycleController(timeSpeed, lightDistance, directionalLight);
 
     let then = performance.now();
     function loop(now) {
@@ -329,25 +322,7 @@ async function main() {
         const delta = now - then;
         then = now;
 
-        time += delta * timeSpeed;
-
-        if (time > timeMax) time = 0;
-
-        if (time === 0) {
-            timeFraction = 0;
-        } else {
-            timeFraction = time / timeMax;
-        }
-
-        nowPI = timeFraction * 2 * Math.PI;
-
-        sinx = Math.sin(nowPI);
-        siny = Math.sin(nowPI - 1/2*Math.PI);
-
-        lightPosX = lightDistance * sinx;
-        lightPosY = lightDistance * siny;
-
-        directionalLight.position.set(lightPosX, lightPosY);
+        dayCycleController.cycleTime(delta);
 
         // feed uniform med (lightPosX, lightPosY) til skybox!
         //this.skybox.material.uniforms.sunDirection.value = (lightPosX, lightPosY);
