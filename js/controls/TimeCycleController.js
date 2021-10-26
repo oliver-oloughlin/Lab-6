@@ -1,6 +1,6 @@
 const timeMax = 1000 * 60 * 60 * 24;
 
-export default class {
+export default class TimeCycleController {
 
     constructor(timeSpeed = 1, lightDistance = 1000, directionalLight) {
 

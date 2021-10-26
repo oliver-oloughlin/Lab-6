@@ -19,7 +19,7 @@ import TerrainBufferGeometry from './terrain/TerrainBufferGeometry.js';
 import { GLTFLoader } from './loaders/GLTFLoader.js';
 import { SimplexNoise } from './lib/SimplexNoise.js';
 import Skybox from './shaders/Skybox.js';
-import DayCycleController from './controls/DayCycleController.js';
+import TimeCycleController from './controls/TimeCycleController.js';
 
 async function main() {
 
@@ -243,78 +243,12 @@ async function main() {
      * Set up camera controller:
      */
 
-    const mouseLookController = new MouseLookController(camera);
-
-    // We attach a click lister to the canvas-element so that we can request a pointer lock.
-    // https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API
     const canvas = renderer.domElement;
-
-    canvas.addEventListener('click', () => {
-        canvas.requestPointerLock();
-    });
-
-    let yaw = 0;
-    let pitch = 0;
-    const mouseSensitivity = 0.001;
-
-    function updateCamRotation(event) {
-        yaw += event.movementX * mouseSensitivity;
-        pitch += event.movementY * mouseSensitivity;
-    }
-
-    document.addEventListener('pointerlockchange', () => {
-        if (document.pointerLockElement === canvas) {
-            canvas.addEventListener('mousemove', updateCamRotation, false);
-        } else {
-            canvas.removeEventListener('mousemove', updateCamRotation, false);
-        }
-    });
-
-    let move = {
-        forward: false,
-        backward: false,
-        left: false,
-        right: false,
-        speed: 0.05
-    };
-
-    window.addEventListener('keydown', (e) => {
-        if (e.code === 'KeyW') {
-            move.forward = true;
-            e.preventDefault();
-        } else if (e.code === 'KeyS') {
-            move.backward = true;
-            e.preventDefault();
-        } else if (e.code === 'KeyA') {
-            move.left = true;
-            e.preventDefault();
-        } else if (e.code === 'KeyD') {
-            move.right = true;
-            e.preventDefault();
-        }
-    });
-
-    window.addEventListener('keyup', (e) => {
-        if (e.code === 'KeyW') {
-            move.forward = false;
-            e.preventDefault();
-        } else if (e.code === 'KeyS') {
-            move.backward = false;
-            e.preventDefault();
-        } else if (e.code === 'KeyA') {
-            move.left = false;
-            e.preventDefault();
-        } else if (e.code === 'KeyD') {
-            move.right = false;
-            e.preventDefault();
-        }
-    });
-
-    const velocity = new Vector3(0.0, 0.0, 0.0);
+    const mouseLookController = new MouseLookController(camera, canvas, window, document);
 
     const timeSpeed = 24 * 60 * 4;
     const lightDistance = 1000;
-    const dayCycleController = new DayCycleController(timeSpeed, lightDistance, directionalLight);
+    const timeCycleController = new TimeCycleController(timeSpeed, lightDistance, directionalLight);
 
     let then = performance.now();
     function loop(now) {
@@ -322,40 +256,12 @@ async function main() {
         const delta = now - then;
         then = now;
 
-        dayCycleController.cycleTime(delta);
+        timeCycleController.cycleTime(delta);
 
         // feed uniform med (lightPosX, lightPosY) til skybox!
         //this.skybox.material.uniforms.sunDirection.value = (lightPosX, lightPosY);
 
-
-        const moveSpeed = move.speed * delta;
-
-        velocity.set(0.0, 0.0, 0.0);
-
-        if (move.left) {
-            velocity.x -= moveSpeed;
-        }
-
-        if (move.right) {
-            velocity.x += moveSpeed;
-        }
-
-        if (move.forward) {
-            velocity.z -= moveSpeed;
-        }
-
-        if (move.backward) {
-            velocity.z += moveSpeed;
-        }
-
-        // update controller rotation.
-        mouseLookController.update(pitch, yaw);
-        yaw = 0;
-        pitch = 0;
-
-        // apply rotation to velocity vector, and translate moveNode with it.
-        velocity.applyQuaternion(camera.quaternion);
-        camera.position.add(velocity);
+        mouseLookController.moveCamera(delta);
 
         // render scene:
         renderer.render(scene, camera);
