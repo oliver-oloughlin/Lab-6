@@ -11,6 +11,11 @@ import {
     AxesHelper,
     SphereBufferGeometry,
     HemisphereLight,
+    AmbientLight,
+    BoxBufferGeometry,
+    MeshStandardMaterial,
+    CubeTextureLoader,
+    sRGBEncoding,
 } from './lib/three.module.js';
 
 import ModelLoader from './lib/ModelLoader.js'
@@ -135,8 +140,12 @@ async function main() {
 
     //const skybox = new Mesh(new SphereBufferGeometry(100.0, 64, 64), new Skybox());
     //scene.add(skybox);
-    scene.environment = new TextureLoader().load("resources/images/panorama.jpg");
-    scene.background = new TextureLoader().load("resources/images/panorama.jpg");
+    const cubeLoader = new CubeTextureLoader();
+    cubeLoader.setPath("resources/textures/CubeMap/");
+    const skybox = cubeLoader.load([ 'pos_x.jpg', 'neg_x.jpg', 'pos_y.jpg', 'neg_y.jpg', 'pos_z.jpg', 'neg_z.jpg']);
+    skybox.encoding = sRGBEncoding;
+    scene.environment, scene.background = skybox; //new TextureLoader().load("resources/images/panorama.jpg");
+    //scene.background = new TextureLoader().load("resources/images/panorama.jpg");
     //skybox.position.y = 0; // fjern når ferdig med testing
 
     // instantiate a GLTFLoader and load all models
@@ -144,6 +153,25 @@ async function main() {
     //ModelLoader.loadAllModels(scene,loader,width,terrainGeometry);
     
     Slepinir.loadSleipnir(scene);
+
+    const testMat = new MeshStandardMaterial({
+        map: new TextureLoader().load("resources/textures/Sleipnir/BodySides_albedo_alpha.png"),
+        metalness: 1,
+        metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_metal_gloss_ao.png"),
+        roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_metal_gloss_ao.png"),
+        normalMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_normal.png"),
+        envMap: skybox,
+    })
+    const testBox = new Mesh(new BoxBufferGeometry(8, 8, 8, 1, 1, 1), testMat);
+    scene.add(testBox);
+
+    // for testing
+    //scene.add(new AmbientLight(0xffffff, 1));
+    
+
+    testBox.position.y = 50;
+
+    renderer.physicallyCorrectLights=true;
     
 
 
