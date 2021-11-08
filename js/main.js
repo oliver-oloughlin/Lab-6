@@ -10,6 +10,7 @@ import {
     Vector3,
     AxesHelper,
     SphereBufferGeometry,
+    HemisphereLight,
 } from './lib/three.module.js';
 
 import ModelLoader from './lib/ModelLoader.js'
@@ -21,6 +22,7 @@ import { GLTFLoader } from './loaders/GLTFLoader.js';
 import { SimplexNoise } from './lib/SimplexNoise.js';
 import Skybox from './shaders/Skybox.js';
 import TimeCycleController from './controls/TimeCycleController.js';
+import Slepinir from './assets/sleipnir.js';
 
 async function main() {
 
@@ -79,6 +81,7 @@ async function main() {
     camera.rotation.x -= Math.PI * 0.25;
 
 
+
     /**
      * Add terrain:
      * 
@@ -130,20 +133,26 @@ async function main() {
 
     scene.add(terrain);
 
-    const skybox = new Mesh(new SphereBufferGeometry(100.0, 64, 64), new Skybox());
-    scene.add(skybox);
-    skybox.position.y = 0; // fjern når ferdig med testing
+    //const skybox = new Mesh(new SphereBufferGeometry(100.0, 64, 64), new Skybox());
+    //scene.add(skybox);
+    scene.environment = new TextureLoader().load("resources/images/panorama.jpg");
+    scene.background = new TextureLoader().load("resources/images/panorama.jpg");
+    //skybox.position.y = 0; // fjern når ferdig med testing
 
     // instantiate a GLTFLoader and load all models
     const loader = new GLTFLoader();
-    ModelLoader.loadAllModels(scene,loader,width,terrainGeometry);
+    //ModelLoader.loadAllModels(scene,loader,width,terrainGeometry);
+    
+    Slepinir.loadSleipnir(scene);
+    
+
 
     const canvas = renderer.domElement;
     const mouseLookController = new MouseLookController(camera, canvas, window, document);
 
 
     // Setup timeCycleController
-    const timeSpeed = 24 * 60 * 4; // 1 day-cycle = 15 seconds, default = realtime
+    const timeSpeed = 24 * 60 * 1; // 1 day-cycle = 15 seconds, default = realtime
     const lightDistance = 1000;
     const timeCycleController = new TimeCycleController(timeSpeed, lightDistance, directionalLight);
 

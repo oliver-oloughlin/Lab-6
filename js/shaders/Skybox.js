@@ -64,7 +64,7 @@ export default class Skybox extends ShaderMaterial{
             }
 
             // Fargelegger skybox
-            // Konverter til vec3
+            // Ikke konverter til vec3 inputs, i denne omgang.
             vec3 atmosphericScattering(vec2 x, vec2 y){
                 // Original
                 //vec2 correctedY = y / max(iResolution.x, iResolution.y) * iResolution.xy;
@@ -102,12 +102,9 @@ export default class Skybox extends ShaderMaterial{
             
 
             void main(){
-                // Få inn fragCoord. Muligens også iResolution.
                 vec2 position = vPosition.xy / max(vPosition.x, vPosition.y) * 2.0;
-                //vec2 position = vPosition.xy / max(1920.0, 1080.0) * 2.0;
 
                 //hent fra directional light
-               // konverter til vec3 
                 vec2 lightPosition = vec2(0.5, 0.5) * 2.0;
 
                 vec3 color = atmosphericScattering(position, lightPosition);
@@ -124,6 +121,7 @@ export default class Skybox extends ShaderMaterial{
             fragmentShader: fragmentShader,
 
             uniforms: {
+                sunDirection: {value: (0.5, 0.5)},
             }
         });
     }
