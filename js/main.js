@@ -65,21 +65,21 @@ async function main() {
     /**
      * Add light
      */
-    const directionalLight = new DirectionalLight(0xffffff);
-    directionalLight.position.set(1000, 1000, 0);
-    directionalLight.castShadow = true;
+    const sun = new DirectionalLight(0xffffff, 2);
+    sun.position.set(1000, 1000, 0);
+    sun.castShadow = true;
 
     //Set up shadow properties for the light
-    directionalLight.shadow.mapSize.width = 512;
-    directionalLight.shadow.mapSize.height = 512;
-    directionalLight.shadow.camera.near = 0.5;
-    directionalLight.shadow.camera.far = 2000;
+    sun.shadow.mapSize.width = 512;
+    sun.shadow.mapSize.height = 512;
+    sun.shadow.camera.near = 0.5;
+    sun.shadow.camera.far = 2000;
 
-    scene.add(directionalLight);
+    scene.add(sun);
 
     // Set direction
-    directionalLight.target.position.set(0, 15, 0);
-    scene.add(directionalLight.target);
+    sun.target.position.set(0, 15, 0);
+    scene.add(sun.target);
 
     camera.position.z = 70;
     camera.position.y = 55;
@@ -140,6 +140,7 @@ async function main() {
 
     //const skybox = new Mesh(new SphereBufferGeometry(100.0, 64, 64), new Skybox());
     //scene.add(skybox);
+    // Note to self: Equirectangular
     const cubeLoader = new CubeTextureLoader();
     cubeLoader.setPath("resources/textures/CubeMap/");
     const skybox = cubeLoader.load([ 'pos_x.jpg', 'neg_x.jpg', 'pos_y.jpg', 'neg_y.jpg', 'pos_z.jpg', 'neg_z.jpg']);
@@ -152,26 +153,12 @@ async function main() {
     const loader = new GLTFLoader();
     //ModelLoader.loadAllModels(scene,loader,width,terrainGeometry);
     
-    Slepinir.loadSleipnir(scene);
-
-    const testMat = new MeshStandardMaterial({
-        map: new TextureLoader().load("resources/textures/Sleipnir/BodySides_albedo_alpha.png"),
-        metalness: 1,
-        metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_metal_gloss_ao.png"),
-        roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_metal_gloss_ao.png"),
-        normalMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_normal.png"),
-        envMap: skybox,
-    })
-    const testBox = new Mesh(new BoxBufferGeometry(8, 8, 8, 1, 1, 1), testMat);
-    scene.add(testBox);
+    Slepinir.loadSleipnir(scene, skybox);
 
     // for testing
-    //scene.add(new AmbientLight(0xffffff, 1));
-    
+    scene.add(new AmbientLight(0xffffff, 1));
 
-    testBox.position.y = 50;
-
-    renderer.physicallyCorrectLights=true;
+    renderer.physicallyCorrectLights = true;
     
 
 
@@ -180,9 +167,9 @@ async function main() {
 
 
     // Setup timeCycleController
-    const timeSpeed = 24 * 60 * 1; // 1 day-cycle = 15 seconds, default = realtime
+    const timeSpeed = 24 * 60 * 0; // 1 day-cycle = 15 seconds, default = realtime
     const lightDistance = 1000;
-    const timeCycleController = new TimeCycleController(timeSpeed, lightDistance, directionalLight);
+    const timeCycleController = new TimeCycleController(timeSpeed, lightDistance, sun);
 
     let then = performance.now();
     function loop(now) {
@@ -191,9 +178,6 @@ async function main() {
         then = now;
 
         timeCycleController.cycleTime(delta);
-
-        // feed uniform med (lightPosX, lightPosY) til skybox!
-        //this.skybox.material.uniforms.sunDirection.value = (lightPosX, lightPosY);
 
         mouseLookController.moveCamera(delta);
 
