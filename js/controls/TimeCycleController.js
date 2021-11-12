@@ -4,6 +4,7 @@ export default class TimeCycleController {
 
     constructor(timeSpeed = 1, lightDistance = 1000, directionalLight) {
 
+    this.pureTimeTotal = 0;
     this.time = timeMax / 2;
     this.timeSpeed = timeSpeed;
     this.lightDistance = lightDistance;
@@ -25,6 +26,7 @@ export default class TimeCycleController {
 
     cycleTime(deltaTime) {
 
+    this.pureTimeTotal += deltaTime;
     this.time += deltaTime * this.timeSpeed;
 
     if (this.time >= timeMax) this.time = 0;
