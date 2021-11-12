@@ -96,24 +96,24 @@ export default class Slepinir {
                         child.receiveShadow = true;
                     }
                 })
-
-                const hlColor = 0xeeeeff;
+                
+                const hlColor = 0x9999ff;
                 const flIntensity = 300;
                 const hlDistance = 300;
                 const hlRight = new THREE.SpotLight(hlColor, flIntensity, hlDistance, 0.3, 1.0);
                 const hlLeft = new THREE.SpotLight(hlColor, flIntensity, hlDistance, 0.3, 1.0);
 
-                (hlRight, hlLeft).castShadow = true;
+                hlLeft.castShadow = true;
+                hlRight.castShadow = true;
                 hlRight.add(hlRight.target);
-                hlRight.target.position.set(-12, 4.93, 100);
+                hlRight.target.position.set(-12, 0, 100);
                 hlLeft.add(hlLeft.target);
-                hlLeft.target.position.set(12, 4.93, 100);
+                hlLeft.target.position.set(12, 0, 100);
 
                 model.add(hlRight);
                 model.add(hlLeft);
                 hlRight.position.set(-0.92, 4.93, 8.83);
                 hlLeft.position.set(0.92, 4.93, 8.83);
-                //spotlight2.position.set(-0.92, 4.93, 8.83);
 
                 scene.add(model);
                 model.position.y = 10;

@@ -16,6 +16,7 @@ import {
     MeshStandardMaterial,
     CubeTextureLoader,
     sRGBEncoding,
+    CameraHelper,
 } from './lib/three.module.js';
 
 import ModelLoader from './lib/ModelLoader.js'
@@ -70,10 +71,17 @@ async function main() {
     sun.castShadow = true;
 
     //Set up shadow properties for the light
-    sun.shadow.mapSize.width = 512;
-    sun.shadow.mapSize.height = 512;
+
+    const sunShadMapSize = 512;
+    const shadownWidth = 60;
+    sun.shadow.mapSize.width = sunShadMapSize;
+    sun.shadow.mapSize.height = sunShadMapSize;
     sun.shadow.camera.near = 0.5;
-    sun.shadow.camera.far = 2000;
+    sun.shadow.camera.far = 1200;
+    sun.shadow.camera.left = -shadownWidth;
+    sun.shadow.camera.right = shadownWidth;
+    sun.shadow.camera.top = shadownWidth;
+    sun.shadow.camera.bottom = -shadownWidth;
 
     scene.add(sun);
 
@@ -141,6 +149,7 @@ async function main() {
     //const skybox = new Mesh(new SphereBufferGeometry(100.0, 64, 64), new Skybox());
     //scene.add(skybox);
     // Note to self: Equirectangular
+
     const cubeLoader = new CubeTextureLoader();
     cubeLoader.setPath("resources/textures/CubeMap/");
     const skybox = cubeLoader.load([ 'pos_x.jpg', 'neg_x.jpg', 'pos_y.jpg', 'neg_y.jpg', 'pos_z.jpg', 'neg_z.jpg']);
@@ -151,16 +160,17 @@ async function main() {
 
     // instantiate a GLTFLoader and load all models
     const loader = new GLTFLoader();
-    //ModelLoader.loadAllModels(scene,loader,width,terrainGeometry);
+    ModelLoader.loadAllModels(scene,loader,width,terrainGeometry);
     
     Slepinir.loadSleipnir(scene, skybox);
 
     // for testing
     scene.add(new AmbientLight(0xffffff, 1));
 
-    renderer.physicallyCorrectLights = true;
-    
+    scene.add( new CameraHelper( sun.shadow.camera ) );
 
+
+    renderer.physicallyCorrectLights = true;
 
     const canvas = renderer.domElement;
     const mouseLookController = new MouseLookController(camera, canvas, window, document);
