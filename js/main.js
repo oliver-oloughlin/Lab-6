@@ -13,12 +13,14 @@ import {
     HemisphereLight,
     AmbientLight,
     BoxBufferGeometry,
+    PlaneBufferGeometry,
     MeshStandardMaterial,
     CubeTextureLoader,
     sRGBEncoding,
     CameraHelper,
 } from './lib/three.module.js';
 
+import WaterMaterial from './materials/WaterMaterial.js';
 import ModelLoader from './lib/ModelLoader.js'
 import Utilities from './lib/Utilities.js';
 import MouseLookController from './controls/MouseLookController.js';
@@ -181,6 +183,18 @@ async function main() {
     const lightDistance = 1000;
     const timeCycleController = new TimeCycleController(timeSpeed, lightDistance, sun);
 
+    // Setup water
+    const waterNormalmap = new TextureLoader().load('resources/textures/Water/normalmap_water.jpg');
+    waterNormalmap.wrapS = RepeatWrapping;
+    waterNormalmap.wrapT = RepeatWrapping;
+    waterNormalmap.repeat.set(50, 50);
+    const planeGeometry = new PlaneBufferGeometry(50,50,16,16);
+    const waterMaterial = new WaterMaterial(waterNormalmap);
+    const water = new Mesh(planeGeometry,waterMaterial);
+    scene.add(water);
+    water.translateY(75);
+    water.rotateX(Math.PI/2)
+
     let then = performance.now();
     function loop(now) {
 
@@ -190,6 +204,8 @@ async function main() {
         timeCycleController.cycleTime(delta);
 
         mouseLookController.moveCamera(delta);
+
+        water.material.uniforms.time.value = timeCycleController.pureTimeTotal;
 
         // render scene:
         renderer.render(scene, camera);

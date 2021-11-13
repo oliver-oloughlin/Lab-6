@@ -24,8 +24,13 @@ export default class WaterMaterial extends ShaderMaterial {
             uniform sampler2D nmap;
             in vec2 texcoord;
 
+            float modulo(float a,float b) {
+                return a - (b * floor(a/b));
+            }
+
             void main() {
-                vec4 tex = texture(nmap, texcoord);
+                float timeShift = modulo(time * 0.0001, 1.0);
+                vec4 tex = texture(nmap, texcoord * timeShift);
                 gl_FragColor = tex;
             }
         `
