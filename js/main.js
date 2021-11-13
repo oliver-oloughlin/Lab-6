@@ -91,9 +91,9 @@ async function main() {
     sun.target.position.set(0, 15, 0);
     scene.add(sun.target);
 
-    camera.position.z = 70;
-    camera.position.y = 55;
-    camera.rotation.x -= Math.PI * 0.25;
+    camera.position.z = 30;
+    camera.position.y = 100;
+    camera.rotation.x -= Math.PI * 0.3;
 
 
 
@@ -179,7 +179,7 @@ async function main() {
 
 
     // Setup timeCycleController
-    const timeSpeed = 24 * 60 * 0; // 1 day-cycle = 15 seconds, default = realtime
+    const timeSpeed = 24 * 60 * 4; // 1 day-cycle = 15 seconds, default = realtime
     const lightDistance = 1000;
     const timeCycleController = new TimeCycleController(timeSpeed, lightDistance, sun);
 
