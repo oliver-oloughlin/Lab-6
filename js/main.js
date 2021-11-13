@@ -184,7 +184,7 @@ async function main() {
     const timeCycleController = new TimeCycleController(timeSpeed, lightDistance, sun);
 
     // Setup water
-    const waterNormalmap = new TextureLoader().load('resources/textures/Water/normalmap_water.jpg');
+    const waterNormalmap = new TextureLoader().load('resources/textures/Water/normalmap2.jpg');
     waterNormalmap.wrapS = RepeatWrapping;
     waterNormalmap.wrapT = RepeatWrapping;
     waterNormalmap.repeat.set(50, 50);

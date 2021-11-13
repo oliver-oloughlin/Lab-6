@@ -45,20 +45,36 @@ export default class WaterMaterial extends ShaderMaterial {
 
             void main() {
 
-                float timeShift = time * 0.0003;
-                float x1 = modulo(texcoord.x + timeShift, 1.0);
-                float x2 = modulo(texcoord.x - timeShift, 1.0);
-                float y = modulo(texcoord.y + timeShift, 1.0);
+                float timeShift = time * 0.00015; // How fast the normal map moves
+                float x1 = modulo(texcoord.x + timeShift, 1.0); // This x coordinate moves in positive direction
+                float x2 = modulo(texcoord.x - timeShift, 1.0); // This x coordinate moves in negative direction
+                float y = modulo(texcoord.y + timeShift, 1.0); // y always moves in positive direction
 
-                vec4 n1 = texture(nmap, vec2(x1,y));
-                vec4 n2 = texture(nmap, vec2(x2, y));
-                vec4 normal = mix(n1, n2, 0.5);
+                // An attempt at making the edges slightly less jarring
+                float shiftx1 = 0.0;
+                float shiftx2 = 0.0;
+                float shifty = 0.0;
 
+                if (x1 < 0.01) shiftx1 = x1;
+                else if (x1 > 0.99) shiftx1 = -x1;
+
+                if (x2 < 0.01) shiftx2 = x2;
+                else if (x2 > 0.99) shiftx2 = -x2;
+
+                if (y < 0.01) shifty = y;
+                else if (y > 0.99) shifty = -y;
+
+                // We get 2 normals from the normalmap based on x1 and x2, and we use the same y for both. This lets us move 2 perceived instances of the normalmap across each other diagonally.
+                vec4 n1 = texture(nmap, vec2(x1 + shiftx1, y + shifty));
+                vec4 n2 = texture(nmap, vec2(x2 + shiftx2, y + shifty));
+                vec4 normal = max(n1, n2); // We mix the 2 normals into 1 that  we actually use
+
+                // Light..
                 vec3 lightPos = vec3(100, 400, 0);
                 vec3 lightDirection = normalize(lightPos);
-
                 float lambertian = clamp(dot(lightDirection, normal.xyz), 0.001, 1.0);
 
+                // Final output
                 gl_FragColor = lambertian * color;
 
             }
