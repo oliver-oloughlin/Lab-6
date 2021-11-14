@@ -34,7 +34,7 @@ export default class WaterMaterial extends ShaderMaterial {
             uniform vec3 sunPosition;
             varying vec2 texcoord;
             in vec3 pos;
-            const vec3 color = vec3(0.0, 0.4, 0.8);
+            const vec3 color = vec3(0.0, 0.3, 0.6);
 
             float modulo(float a, float b) {
                 return a - (b * floor(a/b));
@@ -77,7 +77,7 @@ export default class WaterMaterial extends ShaderMaterial {
                 vec3 reflectDirection = reflect(-sunPosition, normal.xyz);
                 vec3 viewDirection = normalize(-pos);
 
-                float shininess = 0.001;
+                float shininess = 0.00001;
                 vec3 specularColor = vec3(0.1, 0.2, 0.25);
                 float specular = 0.0;
                 if (lambertian > 0.0) {
