@@ -199,14 +199,11 @@ async function main() {
 
     // Setup water
     const waterNormalmap = new TextureLoader().load('resources/textures/Water/normalmap2.jpg');
-    waterNormalmap.wrapS = RepeatWrapping;
-    waterNormalmap.wrapT = RepeatWrapping;
-    waterNormalmap.repeat.set(50, 50);
-    const planeGeometry = new PlaneBufferGeometry(50,50,16,16);
+    const planeGeometry = new PlaneBufferGeometry(100,100);
     const waterMaterial = new WaterMaterial(waterNormalmap);
     const water = new Mesh(planeGeometry,waterMaterial);
     scene.add(water);
-    water.translateY(75);
+    water.translateY(0.01);
     water.rotateX(Math.PI/2)
 
     let then = performance.now();
@@ -220,6 +217,7 @@ async function main() {
         mouseLookController.moveCamera(delta);
 
         water.material.uniforms.time.value = timeCycleController.pureTimeTotal;
+        water.material.uniforms.sunPosition.value = [timeCycleController.posX, timeCycleController.posY, 0];
 
         animateClouds(cloudTab);
 

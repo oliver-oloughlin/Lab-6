@@ -31,9 +31,10 @@ export default class WaterMaterial extends ShaderMaterial {
 
             uniform float time;
             uniform sampler2D nmap;
+            uniform vec3 sunPosition;
             varying vec2 texcoord;
             in vec3 pos;
-            const vec4 color = vec4(0.0, 0.6, 1.0, 1.0);
+            const vec3 color = vec3(0.0, 0.4, 0.8);
 
             float modulo(float a, float b) {
                 return a - (b * floor(a/b));
@@ -70,12 +71,22 @@ export default class WaterMaterial extends ShaderMaterial {
                 vec4 normal = max(n1, n2); // We mix the 2 normals into 1 that  we actually use
 
                 // Light..
-                vec3 lightPos = vec3(100, 400, 0);
-                vec3 lightDirection = normalize(lightPos);
+                vec3 lightDirection = normalize(sunPosition);
                 float lambertian = clamp(dot(lightDirection, normal.xyz), 0.001, 1.0);
 
+                vec3 reflectDirection = reflect(-sunPosition, normal.xyz);
+                vec3 viewDirection = normalize(-pos);
+
+                float shininess = 0.001;
+                vec3 specularColor = vec3(0.1, 0.2, 0.25);
+                float specular = 0.0;
+                if (lambertian > 0.0) {
+                    float specAngle = max(dot(reflectDirection, viewDirection), 0.0);
+                    specular = pow(specAngle, shininess);
+                }
+
                 // Final output
-                gl_FragColor = lambertian * color;
+                gl_FragColor = vec4((lambertian * color) + (specular * specularColor), 1.0);
 
             }
         `
@@ -88,7 +99,8 @@ export default class WaterMaterial extends ShaderMaterial {
             uniforms: {
                 time: { value: 0 },
                 nmap: { value: normalmap },
-                PI: { value: Math.PI }
+                PI: { value: Math.PI },
+                sunPosition: { value: [10, 10, 0] }
             }
         });
         
