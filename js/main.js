@@ -31,6 +31,7 @@ import { SimplexNoise } from './lib/SimplexNoise.js';
 import Skybox from './shaders/Skybox.js';
 import TimeCycleController from './controls/TimeCycleController.js';
 import Slepinir from './assets/sleipnir.js';
+import {generateBillboardClouds, animateClouds} from './terrain/Weather.js';
 
 async function main() {
 
@@ -183,6 +184,19 @@ async function main() {
     const lightDistance = 1000;
     const timeCycleController = new TimeCycleController(timeSpeed, lightDistance, sun);
 
+    // Setup clouds
+    var cloudTab = []
+    for(let i = 0; i < 100; i++) {
+        if(i == 0) {
+            var cloud = generateBillboardClouds(true);
+
+        } else {
+            var cloud = generateBillboardClouds(false);
+        }
+        cloudTab.push(cloud);
+        scene.add(cloud);
+    }
+
     // Setup water
     const waterNormalmap = new TextureLoader().load('resources/textures/Water/normalmap2.jpg');
     waterNormalmap.wrapS = RepeatWrapping;
@@ -206,6 +220,8 @@ async function main() {
         mouseLookController.moveCamera(delta);
 
         water.material.uniforms.time.value = timeCycleController.pureTimeTotal;
+
+        animateClouds(cloudTab);
 
         // render scene:
         renderer.render(scene, camera);
