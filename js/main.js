@@ -118,28 +118,12 @@ async function main() {
         height: 20
     });
 
-    const grassTexture = new TextureLoader().load('resources/textures/grass_02.png');
-    grassTexture.wrapS = RepeatWrapping;
-    grassTexture.wrapT = RepeatWrapping;
-    grassTexture.repeat.set(5000 / width, 5000 / width);
-
-    const rockTexture = new TextureLoader().load('resources/textures/rock_02.png');
-    rockTexture.wrapS = RepeatWrapping;
-    rockTexture.wrapT = RepeatWrapping;
-    rockTexture.repeat.set(1500 / width, 1500 / width);
-
-    const snowyRockTexture = new TextureLoader().load('resources/textures/snowy_rock_01.png');
-    snowyRockTexture.wrapS = RepeatWrapping;
-    snowyRockTexture.wrapT = RepeatWrapping;
-    snowyRockTexture.repeat.set(1500 / width, 1500 / width);
-
-    const splatMap = new TextureLoader().load('resources/images/custom_heightmap2.png');
+    const heightMap = new TextureLoader().load('resources/images/custom_heightmap2.png');
 
     const terrainMaterial = new TextureSplattingMaterial({
         color: 0xffffff,
         shininess: 0,
-        textures: [grassTexture, snowyRockTexture],
-        splatMaps: [splatMap]
+        splatMaps: [heightMap]
     });
 
     const terrain = new Mesh(terrainGeometry, terrainMaterial);
@@ -180,7 +164,7 @@ async function main() {
 
 
     // Setup timeCycleController
-    const timeSpeed = 24 * 60 * 4; // 1 day-cycle = 15 seconds, default = realtime
+    const timeSpeed = 24 * 60 * 2; // 1 day-cycle = 15 seconds, default = realtime
     const lightDistance = 1000;
     const timeCycleController = new TimeCycleController(timeSpeed, lightDistance, sun);
 
@@ -203,7 +187,7 @@ async function main() {
     const waterMaterial = new WaterMaterial(waterNormalmap);
     const water = new Mesh(planeGeometry,waterMaterial);
     scene.add(water);
-    water.translateY(0.01);
+    water.translateY(3.0);
     water.rotateX(Math.PI/2)
 
     let then = performance.now();

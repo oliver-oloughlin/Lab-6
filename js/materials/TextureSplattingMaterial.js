@@ -1,5 +1,5 @@
 
-import { ShaderMaterial, Color, ShaderLib, UniformsLib, UniformsUtils } from '../lib/three.module.js';
+import { ShaderMaterial, Color, ShaderLib, UniformsLib, UniformsUtils, TextureLoader, RepeatWrapping } from '../lib/three.module.js';
 
 import ShaderCustomiser from './ShaderCustomiser.js';
 
@@ -42,7 +42,21 @@ export default class TextureSplattingMaterial extends ShaderMaterial {
             }
         ]);
 
+        const width = 200;
+        
+        const mossTexture = new TextureLoader().load('resources/textures/Ground/plane_tiling_textures_overblown_Moss_BaseColor.png');
+        mossTexture.wrapS = RepeatWrapping;
+        mossTexture.wrapT = RepeatWrapping;
+        mossTexture.repeat.set(5000 / width, 5000 / width);
+
+        const rockTexture = new TextureLoader().load('resources/textures/Ground/plane_tiling_textures_overblown_RockMossy_BaseColor.png');
+        rockTexture.wrapS = RepeatWrapping;
+        rockTexture.wrapT = RepeatWrapping;
+        rockTexture.repeat.set(5000 / width, 5000 / width);
+
         const defines = {};
+
+        textures = [mossTexture, rockTexture];
 
         if (map !== null) {
             uniforms.map = {
@@ -93,41 +107,41 @@ export default class TextureSplattingMaterial extends ShaderMaterial {
 
         /** START Custom shader code: */
 
-        const uv_pars_vertex_custom = `
-#if defined( USE_SPLATMAP ) || defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP ) || defined( USE_ALPHAMAP ) || defined( USE_EMISSIVEMAP ) || defined( USE_ROUGHNESSMAP ) || defined( USE_METALNESSMAP )
-    out vec2 vUv;
-    uniform mat3 uvTransform;
-#endif
-// custom:
-#ifdef USE_SPLATMAP
-    uniform mat3 textureUvTransforms[${length}]; // repeat vector for each texture.
-    out vec2 textureUVs[${length}]; // pass to fragment shader.
-#endif
-`;
+        const uv_pars_vertex_custom =/*GLSL*/ `
+        #if defined( USE_SPLATMAP ) || defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP ) || defined( USE_ALPHAMAP ) || defined( USE_EMISSIVEMAP ) || defined( USE_ROUGHNESSMAP ) || defined( USE_METALNESSMAP )
+            out vec2 vUv;
+            uniform mat3 uvTransform;
+        #endif
+        // custom:
+        #ifdef USE_SPLATMAP
+            uniform mat3 textureUvTransforms[${length}]; // repeat vector for each texture.
+            out vec2 textureUVs[${length}]; // pass to fragment shader.
+        #endif
+        `;
 
-        const uv_vertex_custom = `
-#if defined( USE_SPLATMAP ) || defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP ) || defined( USE_ALPHAMAP ) || defined( USE_EMISSIVEMAP ) || defined( USE_ROUGHNESSMAP ) || defined( USE_METALNESSMAP )
-    vUv = ( uvTransform * vec3( uv, 1 ) ).xy;
-#endif
-// custom:
-#ifdef USE_SPLATMAP
-    for (int i = 0; i < ${length}; i++) {
-        textureUVs[i] = (textureUvTransforms[i] * vec3(uv, 1)).xy;
-    }
-#endif
-`;
+        const uv_vertex_custom =/*GLSL*/ `
+        #if defined( USE_SPLATMAP ) || defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP ) || defined( USE_ALPHAMAP ) || defined( USE_EMISSIVEMAP ) || defined( USE_ROUGHNESSMAP ) || defined( USE_METALNESSMAP )
+            vUv = ( uvTransform * vec3( uv, 1 ) ).xy;
+        #endif
+        // custom:
+        #ifdef USE_SPLATMAP
+            for (int i = 0; i < ${length}; i++) {
+                textureUVs[i] = (textureUvTransforms[i] * vec3(uv, 1)).xy;
+            }
+        #endif
+        `;
 
-        const uv_pars_fragment_custom = `// added splatmap as condition to declare vUv
-#if defined( USE_SPLATMAP ) || defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP ) || defined( USE_ALPHAMAP ) || defined( USE_EMISSIVEMAP ) || defined( USE_ROUGHNESSMAP ) || defined( USE_METALNESSMAP )
-    in vec2 vUv;
-#endif
+        const uv_pars_fragment_custom =/*GLSL*/ `// added splatmap as condition to declare vUv
+        #if defined( USE_SPLATMAP ) || defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP ) || defined( USE_ALPHAMAP ) || defined( USE_EMISSIVEMAP ) || defined( USE_ROUGHNESSMAP ) || defined( USE_METALNESSMAP )
+            in vec2 vUv;
+        #endif
 
-#ifdef USE_SPLATMAP
-    uniform sampler2D textures[${length}];
-    uniform sampler2D splatMaps[${length - 1}]; // one less splatmap than textures.
-    in vec2 textureUVs[${length}]; // computed in vertexshader
-#endif
-`;
+        #ifdef USE_SPLATMAP
+            uniform sampler2D textures[${length}];
+            uniform sampler2D splatMaps[${length - 1}]; // one less splatmap than textures.
+            in vec2 textureUVs[${length}]; // computed in vertexshader
+        #endif
+        `;
 
         const splatmap_blending_code = (i, length) => {
             if (i < length) {
@@ -137,14 +151,14 @@ export default class TextureSplattingMaterial extends ShaderMaterial {
             }
         };
 
-        const splatmap_code = `
-#ifdef USE_SPLATMAP
-    float splatSum = ${Array(length - 1).fill().map((_, i) => `texture2D(splatMaps[${i}], vUv).r`).join(' + ')};
-    vec4 accumulated = ${splatmap_blending_code(0, length - 1)};
-    
-    diffuseColor *= accumulated;
-#endif
-`;
+        const splatmap_code =/*GLSL*/ `
+        #ifdef USE_SPLATMAP
+        float splatSum = ${Array(length - 1).fill().map((_, i) => `texture2D(splatMaps[${i}], vUv).r`).join(' + ')};
+        vec4 accumulated = ${splatmap_blending_code(0, length - 1)};
+        
+        diffuseColor *= accumulated;
+        #endif
+        `;
 
         /** END*/
 

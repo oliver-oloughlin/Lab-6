@@ -6,7 +6,7 @@ import {GLTFLoader} from "../loaders/GLTFLoader.js";
 
 const loader = new GLTFLoader();
 
-const envIntensity = 1.0;
+const envIntensity = 3.0;
 
 export default class Slepinir {
 
@@ -73,6 +73,17 @@ export default class Slepinir {
             envMapIntensity: envIntensity,
         })
 
+        let headlights = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(0xeeeeee),
+            emissive: new THREE.Color(0xffffff),
+
+        })
+        let rearLights = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(0xff2222),
+            emissive: new THREE.Color(0xff4444),
+            emissiveIntensity: 0.7,
+        })
+
         //let pmrem = new THREE.PMREMGenerator().fromScene(scene);
         //pmrem.update(renderer);
 
@@ -89,6 +100,9 @@ export default class Slepinir {
                 model.getObjectByName("Detailing").material = detailing;
                 model.getObjectByName("HyperDetail").material = hyperDetail;
                 model.getObjectByName("OuterBody").material = outerBody;
+                model.getObjectByName("Headlights").material = headlights;
+                model.getObjectByName("RearLights").material = rearLights;
+
                 
                 model.traverse((child) => {
                     if (child.isMesh) {
