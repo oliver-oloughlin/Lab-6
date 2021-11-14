@@ -30,6 +30,7 @@ import { GLTFLoader } from './loaders/GLTFLoader.js';
 import { SimplexNoise } from './lib/SimplexNoise.js';
 import Skybox from './shaders/Skybox.js';
 import TimeCycleController from './controls/TimeCycleController.js';
+import WorldController from './controls/WorldController.js';
 import Slepinir from './assets/sleipnir.js';
 import {generateBillboardClouds, animateClouds} from './terrain/Weather.js';
 
@@ -206,13 +207,18 @@ async function main() {
     water.translateY(0.01);
     water.rotateX(Math.PI/2)
 
+    // Setup WorldController
+    const worldController = new WorldController(window);
+
     let then = performance.now();
     function loop(now) {
 
         const delta = now - then;
         then = now;
 
-        timeCycleController.cycleTime(delta);
+        if (worldController.doTimeCycle) {
+            timeCycleController.cycleTime(delta);
+        }
 
         mouseLookController.moveCamera(delta);
 
