@@ -34,13 +34,16 @@ export default class WaterMaterial extends ShaderMaterial {
             uniform vec3 sunPosition;
             varying vec2 texcoord;
             in vec3 pos;
+
             const vec3 color = vec3(0.0, 0.3, 0.6);
+            const float shininess = 20.0;
+            const vec3 specularColor = vec3(0.0, 0.0, 0.2);
 
             float modulo(float a, float b) {
                 return a - (b * floor(a/b));
             }
 
-            vec4 mix(vec4 a, vec4 b, float f) {
+            vec3 mix(vec3 a, vec3 b, float f) {
                 return f * a + (1.0-f) * b;
             }
 
@@ -66,27 +69,29 @@ export default class WaterMaterial extends ShaderMaterial {
                 else if (y > 0.99) shifty = -y;
 
                 // We get 2 normals from the normalmap based on x1 and x2, and we use the same y for both. This lets us move 2 perceived instances of the normalmap across each other diagonally.
-                vec4 n1 = texture(nmap, vec2(x1 + shiftx1, y + shifty));
-                vec4 n2 = texture(nmap, vec2(x2 + shiftx2, y + shifty));
-                vec4 normal = max(n1, n2); // We mix the 2 normals into 1 that  we actually use
+                vec3 n1 = texture(nmap, vec2(x1 + shiftx1, y + shifty)).xyz;
+                vec3 n2 = texture(nmap, vec2(x2 + shiftx2, y + shifty)).xyz;
+                vec3 normal = mix(n1, n2, 0.5); // We mix the 2 normals into 1 that  we actually use
 
                 // Light..
                 vec3 lightDirection = normalize(sunPosition);
-                float lambertian = clamp(dot(lightDirection, normal.xyz), 0.001, 1.0);
+                float lambertian = clamp(dot(lightDirection, normal), 0.0, 1.0);
 
-                vec3 reflectDirection = reflect(-sunPosition, normal.xyz);
+                vec3 reflectDirection = normalize(reflect(-lightDirection, normal));
                 vec3 viewDirection = normalize(-pos);
 
-                float shininess = 0.00001;
-                vec3 specularColor = vec3(0.1, 0.2, 0.25);
+                vec3 ambient = vec3(0.0, 0.1, 0.2);
                 float specular = 0.0;
                 if (lambertian > 0.0) {
                     float specAngle = max(dot(reflectDirection, viewDirection), 0.0);
                     specular = pow(specAngle, shininess);
                 }
+                else {
+                    ambient = ambient * normal;
+                }
 
                 // Final output
-                gl_FragColor = vec4((lambertian * color) + (specular * specularColor), 1.0);
+                gl_FragColor = vec4(ambient + (lambertian * color) + (specular * specularColor), 1.0);
 
             }
         `

@@ -93,11 +93,10 @@ async function main() {
     sun.target.position.set(0, 15, 0);
     scene.add(sun.target);
 
-    camera.position.z = 30;
-    camera.position.y = 100;
-    camera.rotation.x -= Math.PI * 0.3;
-
-
+    camera.position.z = 75;
+    camera.position.y = 30;
+    camera.position.x = -20;
+    camera.rotation.x -= Math.PI * 0.2;
 
     /**
      * Add terrain:
@@ -207,7 +206,7 @@ async function main() {
         mouseLookController.moveCamera(delta);
 
         water.material.uniforms.time.value = timeCycleController.pureTimeTotal;
-        water.material.uniforms.sunPosition.value = [timeCycleController.posX, timeCycleController.posY, 0];
+        water.material.uniforms.sunPosition.value = sun.position;
 
         animateClouds(cloudTab);
 
