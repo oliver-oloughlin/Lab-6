@@ -16,8 +16,7 @@ export default class WaterMaterial extends ShaderMaterial {
 
             void main() {
 
-                vec4 p = modelViewMatrix * vec4(position, 1.0);
-                pos = vec3(p.xyz) / p.w;
+                pos = cameraPosition - position;
 
                 texcoord = position.xy;
 
@@ -73,21 +72,21 @@ export default class WaterMaterial extends ShaderMaterial {
                 vec3 n2 = texture(nmap, vec2(x2 + shiftx2, y + shifty)).xyz;
                 vec3 normal = mix(n1, n2, 0.5); // We mix the 2 normals into 1 that  we actually use
 
-                // Light..
+                // Lighting
                 vec3 lightDirection = normalize(sunPosition);
                 float lambertian = clamp(dot(lightDirection, normal), 0.0, 1.0);
 
                 vec3 reflectDirection = normalize(reflect(-lightDirection, normal));
                 vec3 viewDirection = normalize(-pos);
 
-                vec3 ambient = vec3(0.0, 0.1, 0.2);
+                vec3 ambient = vec3(0.0, 0.05, 0.1);
                 float specular = 0.0;
                 if (lambertian > 0.0) {
                     float specAngle = max(dot(reflectDirection, viewDirection), 0.0);
                     specular = pow(specAngle, shininess);
                 }
                 else {
-                    ambient = ambient * normal;
+                    ambient *= dot(normal, normal);
                 }
 
                 // Final output
