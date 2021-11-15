@@ -164,7 +164,7 @@ async function main() {
 
 
     // Setup timeCycleController
-    const timeSpeed = 24 * 60 * 2; // 1 day-cycle = 15 seconds, default = realtime
+    const timeSpeed = 24 * 60 * 2;
     const lightDistance = 1000;
     const timeCycleController = new TimeCycleController(timeSpeed, lightDistance, sun);
 
@@ -182,8 +182,8 @@ async function main() {
     }
 
     // Setup water
-    const waterNormalmap = new TextureLoader().load('resources/textures/Water/normalmap2.jpg');
-    const planeGeometry = new PlaneBufferGeometry(100,100);
+    const waterNormalmap = new TextureLoader().load('resources/textures/Water/normalmap.jpg');
+    const planeGeometry = new PlaneBufferGeometry(100, 100, 16, 16);
     const waterMaterial = new WaterMaterial(waterNormalmap);
     const water = new Mesh(planeGeometry,waterMaterial);
     scene.add(water);
@@ -193,18 +193,21 @@ async function main() {
     // Setup WorldController
     const worldController = new WorldController(window);
 
+    // Render loop
     let then = performance.now();
     function loop(now) {
 
         const delta = now - then;
         then = now;
 
+        // Cycle time if set to true
         if (worldController.doTimeCycle) {
             timeCycleController.cycleTime(delta);
         }
 
         mouseLookController.moveCamera(delta);
 
+        // Update water uniforms
         water.material.uniforms.time.value = timeCycleController.pureTimeTotal;
         water.material.uniforms.sunPosition.value = sun.position;
 

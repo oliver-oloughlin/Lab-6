@@ -10,15 +10,21 @@ export default class WaterMaterial extends ShaderMaterial {
 
             precision mediump float;
 
-            varying vec2 texcoord;
             uniform float time;
+            varying vec2 texcoord;
+            uniform vec3 sunPosition;
             out vec3 pos;
+            varying vec3 sunPos;
+
+            const float normalRes = 25.0;
 
             void main() {
 
                 pos = cameraPosition - position;
 
-                texcoord = position.xy;
+                sunPos = sunPosition - (modelMatrix * vec4(position, 1.0)).xyz;
+
+                texcoord = uv.xy * normalRes;
 
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 
@@ -30,9 +36,9 @@ export default class WaterMaterial extends ShaderMaterial {
 
             uniform float time;
             uniform sampler2D nmap;
-            uniform vec3 sunPosition;
             varying vec2 texcoord;
             in vec3 pos;
+            varying vec3 sunPos;
 
             const vec3 color = vec3(0.0, 0.3, 0.6);
             const float shininess = 20.0;
@@ -73,7 +79,7 @@ export default class WaterMaterial extends ShaderMaterial {
                 vec3 normal = mix(n1, n2, 0.5); // We mix the 2 normals into 1 that  we actually use
 
                 // Lighting
-                vec3 lightDirection = normalize(sunPosition);
+                vec3 lightDirection = normalize(sunPos);
                 float lambertian = clamp(dot(lightDirection, normal), 0.0, 1.0);
 
                 vec3 reflectDirection = normalize(reflect(-lightDirection, normal));
