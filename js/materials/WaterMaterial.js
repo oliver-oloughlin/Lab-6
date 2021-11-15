@@ -11,10 +11,10 @@ export default class WaterMaterial extends ShaderMaterial {
             precision mediump float;
 
             uniform float time;
-            varying vec2 texcoord;
             uniform vec3 sunPosition;
+            varying vec2 texcoord;
             out vec3 pos;
-            varying vec3 sunPos;
+            out vec3 sunPos;
 
             const float normalRes = 25.0;
 
@@ -22,7 +22,7 @@ export default class WaterMaterial extends ShaderMaterial {
 
                 pos = cameraPosition - position;
 
-                sunPos = sunPosition - (modelMatrix * vec4(position, 1.0)).xyz;
+                sunPos = sunPosition - position;
 
                 texcoord = uv.xy * normalRes;
 
@@ -36,9 +36,11 @@ export default class WaterMaterial extends ShaderMaterial {
 
             uniform float time;
             uniform sampler2D nmap;
+            uniform vec3 sunPosition;
+            uniform mat4 modelMatrix;
             varying vec2 texcoord;
             in vec3 pos;
-            varying vec3 sunPos;
+            in vec3 sunPos;
 
             const vec3 color = vec3(0.0, 0.3, 0.6);
             const float shininess = 20.0;
