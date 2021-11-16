@@ -203,7 +203,7 @@ async function main() {
 
         // Update water uniforms
         water.material.uniforms.time.value = timeCycleController.pureTimeTotal;
-        water.material.uniforms.sunPosition.value = [10,500,10];
+        water.material.uniforms.sunPosition.value = sun.position;
 
         animateClouds(cloudTab);
 
