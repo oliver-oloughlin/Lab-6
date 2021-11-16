@@ -185,9 +185,11 @@ async function main() {
     }
 
     // Setup water
-    const waterNormalmap = new TextureLoader().load('resources/textures/Water/normalmap.jpg');
+    const waterBumpMap = new TextureLoader().load('resources/textures/Water/bumpmap.jpg');
+    const waterFlowMap = new TextureLoader().load('resources/textures/Water/flowmap.png');
+    const waterAlphaMap = new TextureLoader().load('resources/textures/Water/alphamap.jpg');
     const planeGeometry = new PlaneBufferGeometry(100, 100, 16, 16);
-    const waterMaterial = new WaterMaterial(waterNormalmap);
+    const waterMaterial = new WaterMaterial(waterBumpMap, waterFlowMap, waterAlphaMap);
     const water = new Mesh(planeGeometry,waterMaterial);
     scene.add(water);
     water.translateY(3.0);
@@ -212,7 +214,7 @@ async function main() {
 
         // Update water uniforms
         water.material.uniforms.time.value = timeCycleController.pureTimeTotal;
-        water.material.uniforms.sunPosition.value = sun.position;
+        water.material.uniforms.sunPosition.value = [10,500,10];
 
         animateClouds(cloudTab);
 

@@ -4,7 +4,7 @@ import { DoubleSide, ShaderMaterial } from "../lib/three.module.js";
 
 export default class WaterMaterial extends ShaderMaterial {
 
-    constructor(normalmap) {
+    constructor(bumpMap, flowMap, alphaMap) {
 
         const vertexShader =/*glsl*/ `
 
@@ -12,11 +12,10 @@ export default class WaterMaterial extends ShaderMaterial {
 
             uniform float time;
             uniform vec3 sunPosition;
+
             varying vec2 texcoord;
             out vec3 pos;
             out vec3 sunPos;
-
-            const float normalRes = 25.0;
 
             void main() {
 
@@ -24,7 +23,7 @@ export default class WaterMaterial extends ShaderMaterial {
 
                 sunPos = sunPosition - position;
 
-                texcoord = uv.xy * normalRes;
+                texcoord = uv.xy;
 
                 gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 
@@ -35,70 +34,66 @@ export default class WaterMaterial extends ShaderMaterial {
             precision mediump float;
 
             uniform float time;
-            uniform sampler2D nmap;
+            uniform sampler2D bumpMap;
+            uniform sampler2D flowMap;
+            uniform sampler2D alphaMap;
             uniform vec3 sunPosition;
-            uniform mat4 modelMatrix;
+            uniform float PI;
+
             varying vec2 texcoord;
             in vec3 pos;
             in vec3 sunPos;
 
-            const vec3 color = vec3(0.0, 0.3, 0.6);
+            const vec3 color = vec3(0.2, 0.5, 0.6);
             const float shininess = 20.0;
-            const vec3 specularColor = vec3(0.0, 0.0, 0.2);
+            const vec3 specularColor = vec3(0.2, 0.2, 0.2);
+            const float timeSpeed = 0.0002;
+            const float fidelity = 1.0;
 
             float modulo(float a, float b) {
                 return a - (b * floor(a/b));
             }
 
-            vec3 mix(vec3 a, vec3 b, float f) {
-                return f * a + (1.0-f) * b;
-            }
-
-            void main() {
-
-                float timeShift = time * 0.00015; // How fast the normal map moves
-                float x1 = modulo(texcoord.x + timeShift, 1.0); // This x coordinate moves in positive direction
-                float x2 = modulo(texcoord.x - timeShift, 1.0); // This x coordinate moves in negative direction
-                float y = modulo(texcoord.y + timeShift, 1.0); // y always moves in positive direction
-
-                // An attempt at making the edges slightly less jarring
-                float shiftx1 = 0.0;
-                float shiftx2 = 0.0;
-                float shifty = 0.0;
-
-                if (x1 < 0.01) shiftx1 = x1;
-                else if (x1 > 0.99) shiftx1 = -x1;
-
-                if (x2 < 0.01) shiftx2 = x2;
-                else if (x2 > 0.99) shiftx2 = -x2;
-
-                if (y < 0.01) shifty = y;
-                else if (y > 0.99) shifty = -y;
-
-                // We get 2 normals from the normalmap based on x1 and x2, and we use the same y for both. This lets us move 2 perceived instances of the normalmap across each other diagonally.
-                vec3 n1 = texture(nmap, vec2(x1 + shiftx1, y + shifty)).xyz;
-                vec3 n2 = texture(nmap, vec2(x2 + shiftx2, y + shifty)).xyz;
-                vec3 normal = mix(n1, n2, 0.5); // We mix the 2 normals into 1 that  we actually use
-
-                // Lighting
+            vec3 totalColor(vec3 normal) {
                 vec3 lightDirection = normalize(sunPos);
                 float lambertian = clamp(dot(lightDirection, normal), 0.0, 1.0);
 
                 vec3 reflectDirection = normalize(reflect(-lightDirection, normal));
                 vec3 viewDirection = normalize(-pos);
 
-                vec3 ambient = vec3(0.0, 0.05, 0.1);
+                vec3 ambient = 0.2 * color;
                 float specular = 0.0;
                 if (lambertian > 0.0) {
                     float specAngle = max(dot(reflectDirection, viewDirection), 0.0);
                     specular = pow(specAngle, shininess);
                 }
-                else {
-                    ambient *= dot(normal, normal);
-                }
+
+                return ambient + (lambertian * color) + (specular * specularColor);
+            }
+
+            void main() {
+
+                vec2 tex = vec2(modulo(texcoord.x * fidelity, 1.0), modulo(texcoord.y * fidelity, 1.0));
+
+                float timeShift = time * timeSpeed;
+                float t1 = modulo(timeShift, 1.0);
+                float t2 = modulo(t1 - 0.5, 1.0);
+                vec2 fd = (texture(flowMap, tex).rg - 0.5) / 2.0;
+                vec2 fd1 = fd * t1;
+                vec2 fd2 = fd * t2;
+                vec2 coord1 = tex + fd1;
+                vec2 coord2 = tex + fd2;
+                vec3 n1 = texture(bumpMap, coord1).xyz;
+                vec3 n2 = texture(bumpMap, coord2).xyz;
+                float mixFactor = abs(t1 - 0.5) * 2.0;
+                vec3 normal = normalize(mix(n1, n2, mixFactor));
+
+                float a1 = texture(alphaMap, coord1).x;
+                float a2 = texture(alphaMap, coord2).x;
+                float alpha = clamp(mix(a1,a2,mixFactor), 0.4, 0.7);
 
                 // Final output
-                gl_FragColor = vec4(ambient + (lambertian * color) + (specular * specularColor), 1.0);
+                gl_FragColor = vec4(totalColor(normal), alpha);
 
             }
         `
@@ -107,10 +102,13 @@ export default class WaterMaterial extends ShaderMaterial {
             side: DoubleSide,
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
+            transparent: true,
 
             uniforms: {
                 time: { value: 0 },
-                nmap: { value: normalmap },
+                bumpMap: { value: bumpMap },
+                flowMap: { value: flowMap },
+                alphaMap: { value: alphaMap },
                 PI: { value: Math.PI },
                 sunPosition: { value: [10, 10, 0] }
             }
