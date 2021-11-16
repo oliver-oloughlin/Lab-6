@@ -31,7 +31,7 @@ import { SimplexNoise } from './lib/SimplexNoise.js';
 import Skybox from './shaders/Skybox.js';
 import TimeCycleController from './controls/TimeCycleController.js';
 import WorldController from './controls/WorldController.js';
-import Slepinir from './assets/sleipnir.js';
+import Bridge from './assets/Bridge.js';
 import {generateBillboardClouds, animateClouds} from './terrain/Weather.js';
 
 async function main() {
@@ -149,7 +149,7 @@ async function main() {
     const loader = new GLTFLoader();
     ModelLoader.loadAllModels(scene,loader,width,terrainGeometry);
     
-    Slepinir.loadSleipnir(scene, skybox);
+    Bridge.loadBrdige(scene, skybox);
 
     // for testing
     scene.add(new AmbientLight(0xffffff, 1));
