@@ -66,6 +66,11 @@ export default class Bridge {
             envMap: envMap,
             envMapIntensity: envIntensity,
         })
+
+        let blackout = new THREE.MeshStandardMaterial({
+            color: 0x000000,
+            roughness: 1,
+        });
         //let pmrem = new THREE.PMREMGenerator().fromScene(scene);
         //pmrem.update(renderer);
 
@@ -87,11 +92,13 @@ export default class Bridge {
                 })
 
                 model.getObjectByName("Gravel").material = gravel;
+                model.getObjectByName("Blackout0").material = blackout;
+                model.getObjectByName("Blackout1").material = blackout;
                 
                 //scene.add(model);
                 model.position.y = 10;
                 model.position.z = -10;
-                model.rotation.y = 70;
+                model.rotation.y = Math.PI/8;
                 scene.add(model);
                 Sleipnir.loadSleipnir(model, envMap);
                 Rails.loadRails(model, envMap, 120);

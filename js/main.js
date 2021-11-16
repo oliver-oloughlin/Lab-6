@@ -5,21 +5,12 @@ import {
     Scene,
     Mesh,
     TextureLoader,
-    RepeatWrapping,
     DirectionalLight,
-    Vector3,
     AxesHelper,
-    SphereBufferGeometry,
-    HemisphereLight,
     AmbientLight,
-    BoxBufferGeometry,
     PlaneBufferGeometry,
-    MeshStandardMaterial,
     CubeTextureLoader,
-    sRGBEncoding,
     CameraHelper,
-    WebGLCubeRenderTarget,
-    RGBFormat,
     FogExp2,
 } from './lib/three.module.js';
 
@@ -69,6 +60,8 @@ async function main() {
      */
     document.body.appendChild(renderer.domElement);
 
+    const width = 150;
+
     /**
      * Add light
      */
@@ -79,7 +72,7 @@ async function main() {
     //Set up shadow properties for the light
 
     const sunShadMapSize = 512;
-    const shadownWidth = 60;
+    const shadownWidth = width/2;
     sun.shadow.mapSize.width = sunShadMapSize;
     sun.shadow.mapSize.height = sunShadMapSize;
     sun.shadow.camera.near = 0.5;
@@ -108,8 +101,7 @@ async function main() {
      * We are using the async/await language constructs of Javascript:
      *  - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
      */
-    const heightmapImage = await Utilities.loadImage('resources/images/Output.png');
-    const width = 120;
+    const heightmapImage = await Utilities.loadImage('resources/images/heightmap.png');
 
     const simplex = new SimplexNoise();
     const terrainGeometry = new TerrainBufferGeometry({
@@ -120,7 +112,7 @@ async function main() {
         height: 30
     });
 
-    const heightMap = new TextureLoader().load('resources/images/Output.png');
+    const heightMap = new TextureLoader().load('resources/images/rockmap.png');
 
     const terrainMaterial = new TextureSplattingMaterial({
         color: 0xffffff,
@@ -150,7 +142,7 @@ async function main() {
     ModelLoader.loadAllModels(scene,loader,width,terrainGeometry);
     
     // for testing
-    scene.add(new AmbientLight(0xffffff, 1));
+    scene.add(new AmbientLight(0xffffff, 0.3));
 
     scene.add( new CameraHelper( sun.shadow.camera ) );
 
