@@ -18,6 +18,9 @@ import {
     CubeTextureLoader,
     sRGBEncoding,
     CameraHelper,
+    WebGLCubeRenderTarget,
+    RGBFormat,
+    FogExp2,
 } from './lib/three.module.js';
 
 import WaterMaterial from './materials/WaterMaterial.js';
@@ -28,11 +31,9 @@ import TextureSplattingMaterial from './materials/TextureSplattingMaterial.js';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry.js';
 import { GLTFLoader } from './loaders/GLTFLoader.js';
 import { SimplexNoise } from './lib/SimplexNoise.js';
-import Skybox from './shaders/Skybox.js';
 import TimeCycleController from './controls/TimeCycleController.js';
 import WorldController from './controls/WorldController.js';
 import Bridge from './assets/Bridge.js';
-import Sleipnir from './assets/Sleipnir.js';
 import {generateBillboardClouds, animateClouds} from './terrain/Weather.js';
 
 async function main() {
@@ -107,19 +108,19 @@ async function main() {
      * We are using the async/await language constructs of Javascript:
      *  - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
      */
-    const heightmapImage = await Utilities.loadImage('resources/images/custom_heightmap2.png');
-    const width = 100;
+    const heightmapImage = await Utilities.loadImage('resources/images/Output.png');
+    const width = 120;
 
     const simplex = new SimplexNoise();
     const terrainGeometry = new TerrainBufferGeometry({
         width,
         heightmapImage,
         noiseFn: simplex.noise.bind(simplex),
-        numberOfSubdivisions: 64,
-        height: 20
+        numberOfSubdivisions: 512,
+        height: 30
     });
 
-    const heightMap = new TextureLoader().load('resources/images/custom_heightmap2.png');
+    const heightMap = new TextureLoader().load('resources/images/Output.png');
 
     const terrainMaterial = new TextureSplattingMaterial({
         color: 0xffffff,
@@ -132,28 +133,22 @@ async function main() {
     terrain.castShadow = true;
     terrain.receiveShadow = true;
 
-    scene.add(terrain);
+    scene.add(terrain);    
 
-    //const skybox = new Mesh(new SphereBufferGeometry(100.0, 64, 64), new Skybox());
-    //scene.add(skybox);
-    // Note to self: Equirectangular
 
     const cubeLoader = new CubeTextureLoader();
     cubeLoader.setPath("resources/textures/CubeMap/");
-    const skybox = cubeLoader.load([ 'pos_x.jpg', 'neg_x.jpg', 'pos_y.jpg', 'neg_y.jpg', 'pos_z.jpg', 'neg_z.jpg']);
-    skybox.encoding = sRGBEncoding;
-    scene.environment, scene.background = skybox; //new TextureLoader().load("resources/images/panorama.jpg");
-    //scene.background = new TextureLoader().load("resources/images/panorama.jpg");
-    //skybox.position.y = 0; // fjern når ferdig med testing
+    const skybox = cubeLoader.load([ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
+    scene.environment, scene.background = skybox;
+
+    Bridge.loadBrdige(scene, skybox);
+    
+    
 
     // instantiate a GLTFLoader and load all models
     const loader = new GLTFLoader();
     ModelLoader.loadAllModels(scene,loader,width,terrainGeometry);
     
-    Bridge.loadBrdige(scene, skybox);
-    //Sleipnir.loadSleipnir(scene, skybox);
-    
-
     // for testing
     scene.add(new AmbientLight(0xffffff, 1));
 
@@ -173,7 +168,7 @@ async function main() {
 
     // Setup clouds
     var cloudTab = []
-    for(let i = 0; i < 100; i++) {
+    for(let i = 0; i < 50; i++) {
         if(i == 0) {
             var cloud = generateBillboardClouds(true);
 
@@ -183,10 +178,12 @@ async function main() {
         cloudTab.push(cloud);
         scene.add(cloud);
     }
+    scene.fog = new FogExp2(0xbbbbbb, 0.01);
+
 
     // Setup water
     const waterNormalmap = new TextureLoader().load('resources/textures/Water/normalmap.jpg');
-    const planeGeometry = new PlaneBufferGeometry(100, 100, 16, 16);
+    const planeGeometry = new PlaneBufferGeometry(width, width, 16, 16);
     const waterMaterial = new WaterMaterial(waterNormalmap);
     const water = new Mesh(planeGeometry,waterMaterial);
     scene.add(water);

@@ -3,11 +3,12 @@
 import * as THREE from "../lib/three.module.js";
 import { TextureLoader } from "../lib/three.module.js";
 import {GLTFLoader} from "../loaders/GLTFLoader.js";
+import Rails from "./Rails.js";
 import Sleipnir from "./Sleipnir.js";
 
 const loader = new GLTFLoader();
 
-const envIntensity = 3.0;
+const envIntensity = 1.0;
 
 export default class Bridge {
 
@@ -88,12 +89,12 @@ export default class Bridge {
                 model.getObjectByName("Gravel").material = gravel;
                 
                 //scene.add(model);
-                model.position.y = 15;
-                model.position.z = 0;
+                model.position.y = 10;
+                model.position.z = -10;
                 model.rotation.y = 70;
                 scene.add(model);
                 Sleipnir.loadSleipnir(model, envMap);
-                //Bridge.loadBrdige(model, envMap);
+                Rails.loadRails(model, envMap, 120);
             },
             (error) => {
                 console.error('Error loading model.', error);

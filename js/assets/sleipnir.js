@@ -4,7 +4,7 @@ import * as THREE from "../lib/three.module.js";
 import { TextureLoader } from "../lib/three.module.js";
 import {GLTFLoader} from "../loaders/GLTFLoader.js";
 
-const envIntensity = 3.0;
+const envIntensity = 1.0;
 
 export default class Sleipnir {
     static loadSleipnir(root, envMap) {
@@ -128,7 +128,7 @@ export default class Sleipnir {
                 hlLeft.position.set(0.92, 4.93, 8.83);
     
                 
-                //model.position.y = 10;
+                model.position.x = -2.35;
                 root.add(model);
             },
             // Following gives possibly false errors. Could be due to performance issues.
