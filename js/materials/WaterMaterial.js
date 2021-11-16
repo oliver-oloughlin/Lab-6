@@ -73,7 +73,7 @@ export default class WaterMaterial extends ShaderMaterial {
 
             void main() {
 
-                vec2 tex = vec2(modulo(texcoord.x * fidelity, 1.0), modulo(texcoord.y * fidelity, 1.0));
+                vec2 tex = vec2((sin(texcoord.x * fidelity) + 1.0) / 2.0, (sin(texcoord.y * fidelity) + 1.0) / 2.0);
 
                 float timeShift = time * timeSpeed;
                 float t1 = modulo(timeShift, 1.0);
