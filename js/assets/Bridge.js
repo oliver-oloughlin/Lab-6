@@ -3,6 +3,7 @@
 import * as THREE from "../lib/three.module.js";
 import { TextureLoader } from "../lib/three.module.js";
 import {GLTFLoader} from "../loaders/GLTFLoader.js";
+import Sleipnir from "./Sleipnir.js";
 
 const loader = new GLTFLoader();
 
@@ -68,12 +69,13 @@ export default class Bridge {
         //pmrem.update(renderer);
 
         //let pmremUnpacker = new THREE.PMREM
+        let model = new THREE.Object3D();
 
         console.log("Loading Bridge")
         loader.load(
             "resources/models/tronds_stuff/Bridge.gltf",
             (object) => {
-                const model = object.scene;
+                model = object.scene.clone();
                 
                 model.traverse((child) => {
                     if (child.isMesh) {
@@ -85,10 +87,12 @@ export default class Bridge {
 
                 model.getObjectByName("Gravel").material = gravel;
                 
-                scene.add(model);
+                //scene.add(model);
                 model.position.y = 15;
                 model.position.z = 0;
                 model.rotation.y = 70;
+                scene.add(model);
+                Sleipnir.loadSleipnir(model, envMap);
             },
             (error) => {
                 console.error('Error loading model.', error);

@@ -32,6 +32,7 @@ import Skybox from './shaders/Skybox.js';
 import TimeCycleController from './controls/TimeCycleController.js';
 import WorldController from './controls/WorldController.js';
 import Bridge from './assets/Bridge.js';
+import Sleipnir from './assets/Sleipnir.js';
 import {generateBillboardClouds, animateClouds} from './terrain/Weather.js';
 
 async function main() {
@@ -150,6 +151,8 @@ async function main() {
     ModelLoader.loadAllModels(scene,loader,width,terrainGeometry);
     
     Bridge.loadBrdige(scene, skybox);
+    //Sleipnir.loadSleipnir(scene, skybox);
+    
 
     // for testing
     scene.add(new AmbientLight(0xffffff, 1));
