@@ -110,7 +110,7 @@ export default class Sleipnir {
                 })
                 
                 const hlColor = 0x9999ff;
-                const flIntensity = 300;
+                const flIntensity = 100;
                 const hlDistance = 300;
                 const hlRight = new THREE.SpotLight(hlColor, flIntensity, hlDistance, 0.3, 1.0);
                 const hlLeft = new THREE.SpotLight(hlColor, flIntensity, hlDistance, 0.3, 1.0);
