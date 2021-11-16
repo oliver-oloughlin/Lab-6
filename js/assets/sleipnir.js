@@ -9,77 +9,78 @@ const envIntensity = 3.0;
 export default class Sleipnir {
     static loadSleipnir(root, envMap) {
         let hyperDetail = new THREE.MeshStandardMaterial({
-            map: new TextureLoader().load("resources/textures/Sleipnir/HyperDetailRoof_albedo_alpha.png"),
+            map: new TextureLoader().load("resources/textures/Sleipnir/HyperDetailRoof_albedo_alpha.jpg"),
             metalness: 1.0,
-            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/HyperDetailRoof_metal.png"),
-            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/HyperDetailRoof_roughness.png"),
-            normalMap: new TextureLoader().load("resources/textures/Sleipnir/HyperDetailRoof_normal.png"),
+            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/HyperDetailRoof_metal.jpg"),
+            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/HyperDetailRoof_roughness.jpg"),
+            normalMap: new TextureLoader().load("resources/textures/Sleipnir/HyperDetailRoof_normal.jpg"),
             envMap: envMap,
             envMapIntensity: envIntensity,
-        })
+        });
     
         let detailing = new THREE.MeshStandardMaterial({
-            map: new TextureLoader().load("resources/textures/Sleipnir/Detailing_albedo_alpha.png"),
+            map: new TextureLoader().load("resources/textures/Sleipnir/Detailing_albedo_alpha.jpg"),
             metalness: 1.0,
-            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/Detailing_metal.png"),
-            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/Detailing_roughness.png"),
-            normalMap: new TextureLoader().load("resources/textures/Sleipnir/Detailing_normal.png"),
+            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/Detailing_metal.jpg"),
+            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/Detailing_roughness.jpg"),
+            normalMap: new TextureLoader().load("resources/textures/Sleipnir/Detailing_normal.jpg"),
             envMap: envMap,
             envMapIntensity: envIntensity,
-        })
+        });
         
         let bodySides = new THREE.MeshStandardMaterial({
-            map: new TextureLoader().load("resources/textures/Sleipnir/BodySides_albedo_alpha.png"),
+            map: new TextureLoader().load("resources/textures/Sleipnir/BodySides_albedo_alpha.jpg"),
             metalness: 1.0,
-            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_metal.png"),
-            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_roughness.png"),
-            normalMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_normal.png"),
+            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_metal.jpg"),
+            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_roughness.jpg"),
+            normalMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_normal.jpg"),
+            //aoMap: new TextureLoader().load("resources/textures/Sleipnir/BodySides_ao.jpg"),
             envMap: envMap,
             envMapIntensity: envIntensity,
-        })
+        });
     
         let bogie = new THREE.MeshStandardMaterial({
-            map: new TextureLoader().load("resources/textures/Sleipnir/Bogie_albedo_alpha.png"),
+            map: new TextureLoader().load("resources/textures/Sleipnir/Bogie_albedo_alpha.jpg"),
             metalness: 1.0,
-            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/Bogie_metal.png"),
-            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/Bogie_roughness.png"),
-            normalMap: new TextureLoader().load("resources/textures/Sleipnir/Bogie_normal.png"),
+            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/Bogie_metal.jpg"),
+            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/Bogie_roughness.jpg"),
+            normalMap: new TextureLoader().load("resources/textures/Sleipnir/Bogie_normal.jpg"),
             envMap: envMap,
             envMapIntensity: envIntensity,
-        })
+        });
     
         let chassis = new THREE.MeshStandardMaterial({
-            map: new TextureLoader().load("resources/textures/Sleipnir/Chassis_albedo_alpha.png"),
+            map: new TextureLoader().load("resources/textures/Sleipnir/Chassis_albedo_alpha.jpg"),
             metalness: 1.0,
-            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/Chassis_metal.png"),
-            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/Chassis_roughness.png"),
-            aoMap: new TextureLoader().load("resources/textures/Sleipnir/Chassis_ao.png"),
-            normalMap: new TextureLoader().load("resources/textures/Sleipnir/Chassis_normal.png"),
+            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/Chassis_metal.jpg"),
+            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/Chassis_roughness.jpg"),
+            //aoMap: new TextureLoader().load("resources/textures/Sleipnir/Chassis_ao.jpg"),
+            normalMap: new TextureLoader().load("resources/textures/Sleipnir/Chassis_normal.jpg"),
             envMap: envMap,
             envMapIntensity: envIntensity,
-        })
+        });
     
         let outerBody = new THREE.MeshStandardMaterial({
-            map: new TextureLoader().load("resources/textures/Sleipnir/OuterBody_albedo_alpha.png"),
+            map: new TextureLoader().load("resources/textures/Sleipnir/OuterBody_albedo_alpha.jpg"),
             metalness: 1.0,
-            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/OuterBody_metal.png"),
-            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/OuterBody_roughness.png"),
-            aoMap: new TextureLoader().load("resources/textures/Sleipnir/OuterBody_ao.png"),
-            normalMap: new TextureLoader().load("resources/textures/Sleipnir/OuterBody_normal.png"),
+            metalnessMap: new TextureLoader().load("resources/textures/Sleipnir/OuterBody_metal.jpg"),
+            roughnessMap: new TextureLoader().load("resources/textures/Sleipnir/OuterBody_roughness.jpg"),
+            //aoMap: new TextureLoader().load("resources/textures/Sleipnir/OuterBody_ao.jpg"),
+            normalMap: new TextureLoader().load("resources/textures/Sleipnir/OuterBody_normal.jpg"),
             envMap: envMap,
             envMapIntensity: envIntensity,
-        })
+        });
     
         let headlights = new THREE.MeshStandardMaterial({
             color: new THREE.Color(0xeeeeee),
             emissive: new THREE.Color(0xffffff),
     
-        })
+        });
         let rearLights = new THREE.MeshStandardMaterial({
             color: new THREE.Color(0xff2222),
             emissive: new THREE.Color(0xff4444),
             emissiveIntensity: 0.7,
-        })
+        });
     
         //let pmrem = new THREE.PMREMGenerator().fromScene(scene);
         //pmrem.update(renderer);

@@ -12,18 +12,18 @@ const envIntensity = 3.0;
 export default class Bridge {
 
     static loadBrdige(scene, envMap) {
-        const resConcrete = 20;
-        const concColor = new TextureLoader().load("resources/textures/Bridge/Concrete_BaseColor.png")
+        const resConcrete = 16;
+        const concColor = new TextureLoader().load("resources/textures/Bridge/Concrete_BaseColor.jpg")
         concColor.wrapS = THREE.RepeatWrapping;
         concColor.wrapT = THREE.RepeatWrapping;
         concColor.repeat.set(resConcrete, resConcrete);
 
-        const concRough = new TextureLoader().load("resources/textures/Bridge/Concrete_Roughness.png");
+        const concRough = new TextureLoader().load("resources/textures/Bridge/Concrete_Roughness.jpg");
         concRough.wrapS = THREE.RepeatWrapping;
         concRough.wrapT = THREE.RepeatWrapping;
         concRough.repeat.set(resConcrete, resConcrete);
 
-        const concNormal = new TextureLoader().load("resources/textures/Bridge/Concrete_Normal.png")
+        const concNormal = new TextureLoader().load("resources/textures/Bridge/Concrete_Normal.jpg")
         concNormal.wrapS = THREE.RepeatWrapping;
         concNormal.wrapT = THREE.RepeatWrapping;
         concNormal.repeat.set(resConcrete, resConcrete);
@@ -37,22 +37,22 @@ export default class Bridge {
         })
 
         const resGravel = 3;
-        const gravColor = new TextureLoader().load("resources/textures/Bridge/026_TB_Gravel_road_1024_basecolor.png");
+        const gravColor = new TextureLoader().load("resources/textures/Bridge/Gravel_basecolor.jpg");
         gravColor.wrapS = THREE.RepeatWrapping;
         gravColor.wrapT = THREE.RepeatWrapping;
         gravColor.repeat.set(resGravel, resGravel);
 
-        const gravRough = new TextureLoader().load("resources/textures/Bridge/026_TB_Gravel_road_1024_roughness.png");
+        const gravRough = new TextureLoader().load("resources/textures/Bridge/Gravel_roughness.jpg");
         gravRough.wrapS = THREE.RepeatWrapping;
         gravRough.wrapT = THREE.RepeatWrapping;
         gravRough.repeat.set(resGravel, resGravel);
 
-        const gravNormal = new TextureLoader().load("resources/textures/Bridge/026_TB_Gravel_road_1024_normal.png");
+        const gravNormal = new TextureLoader().load("resources/textures/Bridge/Gravel_normal.jpg");
         gravNormal.wrapS = THREE.RepeatWrapping;
         gravNormal.wrapT = THREE.RepeatWrapping;
         gravNormal.repeat.set(resGravel, resGravel);
 
-        const gravAO = new TextureLoader().load("resources/textures/Bridge/026_TB_Gravel_road_1024_normal.png");
+        const gravAO = new TextureLoader().load("resources/textures/Bridge/Gravel_ambientocclusion.jpg");
         gravAO.wrapS = THREE.RepeatWrapping;
         gravAO.wrapT = THREE.RepeatWrapping;
         gravAO.repeat.set(resGravel, resGravel);
@@ -93,6 +93,7 @@ export default class Bridge {
                 model.rotation.y = 70;
                 scene.add(model);
                 Sleipnir.loadSleipnir(model, envMap);
+                //Bridge.loadBrdige(model, envMap);
             },
             (error) => {
                 console.error('Error loading model.', error);

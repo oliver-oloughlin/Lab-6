@@ -44,12 +44,12 @@ export default class TextureSplattingMaterial extends ShaderMaterial {
 
         const width = 200;
         
-        const mossTexture = new TextureLoader().load('resources/textures/Ground/plane_tiling_textures_overblown_Moss_BaseColor.png');
+        const mossTexture = new TextureLoader().load('resources/textures/Ground/Moss_BaseColor.jpg');
         mossTexture.wrapS = RepeatWrapping;
         mossTexture.wrapT = RepeatWrapping;
         mossTexture.repeat.set(5000 / width, 5000 / width);
 
-        const rockTexture = new TextureLoader().load('resources/textures/Ground/plane_tiling_textures_overblown_RockMossy_BaseColor.png');
+        const rockTexture = new TextureLoader().load('resources/textures/Ground/RockMossy_BaseColor.jpg');
         rockTexture.wrapS = RepeatWrapping;
         rockTexture.wrapT = RepeatWrapping;
         rockTexture.repeat.set(5000 / width, 5000 / width);
