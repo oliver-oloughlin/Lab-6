@@ -48,7 +48,8 @@ export default class WaterMaterial extends ShaderMaterial {
             const float shininess = 20.0;
             const vec3 specularColor = vec3(0.2, 0.2, 0.2);
             const float timeSpeed = 0.0002;
-            const float fidelity = 5.0;
+            const float alphaSpeed = 0.05;
+            const float fidelity = 12.0;
 
             float modulo(float a, float b) {
                 return a - (b * floor(a/b));
@@ -88,9 +89,10 @@ export default class WaterMaterial extends ShaderMaterial {
                 float mixFactor = abs(t1 - 0.5) * 2.0;
                 vec3 normal = normalize(mix(n1, n2, mixFactor));
 
-                float a1 = texture(alphaMap, coord1).x;
-                float a2 = texture(alphaMap, coord2).x;
-                float alpha = clamp(mix(a1,a2,mixFactor), 0.4, 0.7);
+                float ax = modulo(tex.x + timeShift * alphaSpeed, 1.0);
+                float ay = modulo(tex.y + timeShift * alphaSpeed, 1.0);
+                float a = texture(alphaMap, vec2(ax,ay)).x;
+                float alpha = clamp(a, 0.5, 0.6);
 
                 // Final output
                 gl_FragColor = vec4(totalColor(normal), alpha);
@@ -110,7 +112,7 @@ export default class WaterMaterial extends ShaderMaterial {
                 flowMap: { value: flowMap },
                 alphaMap: { value: alphaMap },
                 PI: { value: Math.PI },
-                sunPosition: { value: [10, 10, 0] }
+                sunPosition: { value: [10, 500, 0] }
             }
         });
         
