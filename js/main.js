@@ -174,11 +174,11 @@ async function main() {
 
 
     // Setup water
-    const waterBumpMap = new TextureLoader().load('resources/textures/Water/bumpmap.jpg');
+    const waterNormalMap = new TextureLoader().load('resources/textures/Water/normalmap.jpg');
     const waterFlowMap = new TextureLoader().load('resources/textures/Water/flowmap.png');
     const waterAlphaMap = new TextureLoader().load('resources/textures/Water/alphamap.jpg');
     const planeGeometry = new PlaneBufferGeometry(width, width, 16, 16);
-    const waterMaterial = new WaterMaterial(waterBumpMap, waterFlowMap, waterAlphaMap);
+    const waterMaterial = new WaterMaterial(waterNormalMap, waterFlowMap, waterAlphaMap);
     const water = new Mesh(planeGeometry,waterMaterial);
     scene.add(water);
     water.translateY(3.0);
