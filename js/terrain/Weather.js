@@ -15,10 +15,8 @@ export function generateBillboardClouds() {
         map: cloudTexture,
         transparent: true,
         opacity: 0.5,
-        fog: true,
         depthTest: true,
         depthWrite: true,
-        side: DoubleSide
     })
 
     var cloud = new Sprite(material);
