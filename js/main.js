@@ -11,7 +11,7 @@ import {
     PlaneBufferGeometry,
     CubeTextureLoader,
     CameraHelper,
-    FogExp2,
+    FogExp2, Raycaster, Vector3,
 } from './lib/three.module.js';
 
 import WaterMaterial from './materials/WaterMaterial.js';
@@ -154,6 +154,7 @@ async function main() {
     const lightDistance = 1000;
     const timeCycleController = new TimeCycleController(timeSpeed, lightDistance, sun);
 
+
     // Setup clouds
     var cloudTab = []
     for(let i = 0; i < 100; i++) {
@@ -213,7 +214,6 @@ async function main() {
 
         // render scene:
         renderer.render(scene, camera);
-
         requestAnimationFrame(loop);
 
     }

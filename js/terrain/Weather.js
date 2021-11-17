@@ -18,7 +18,6 @@ export function generateBillboardClouds() {
         fog: true,
         depthTest: true,
         depthWrite: true,
-        castShadow: true,
         side: DoubleSide
     })
 
