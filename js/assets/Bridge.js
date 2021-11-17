@@ -11,8 +11,10 @@ const loader = new GLTFLoader();
 const envIntensity = 1.0;
 
 export default class Bridge {
+    sleip;
+    model;
 
-    static loadBrdige(scene, envMap) {
+    constructor(scene, envMap) {
         const resConcrete = 16;
         const concColor = new TextureLoader().load("resources/textures/Bridge/Concrete_BaseColor.jpg")
         concColor.wrapS = THREE.RepeatWrapping;
@@ -99,13 +101,16 @@ export default class Bridge {
                 model.position.y = 10;
                 model.position.z = -10;
                 model.rotation.y = Math.PI/8;
-                scene.add(model);
-                Sleipnir.loadSleipnir(model, envMap);
-                Rails.loadRails(model, envMap, 120);
+                this.model = model;
+                scene.add(this.model);
+                Rails.loadRails(this.model, envMap, 120);
             },
             (error) => {
                 console.error('Error loading model.', error);
             }
         );
+    }
+    animate() {
+        //this.sleip.animate();
     }
 }

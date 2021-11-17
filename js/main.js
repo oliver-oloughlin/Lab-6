@@ -26,6 +26,7 @@ import TimeCycleController from './controls/TimeCycleController.js';
 import WorldController from './controls/WorldController.js';
 import Bridge from './assets/Bridge.js';
 import {generateBillboardClouds, animateClouds} from './terrain/Weather.js';
+import Sleipnir from './assets/sleipnir.js';
 
 async function main() {
 
@@ -133,7 +134,8 @@ async function main() {
     const skybox = cubeLoader.load([ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
     scene.environment, scene.background = skybox;
 
-    Bridge.loadBrdige(scene, skybox);
+    let bridge = new Bridge(scene, skybox);
+    let sleip = new Sleipnir(scene, skybox);
     
     
 
@@ -209,6 +211,7 @@ async function main() {
         water.material.uniforms.sunPosition.value = sun.position;
 
         animateClouds(cloudTab);
+        sleip.animate();
 
         // render scene:
         renderer.render(scene, camera);

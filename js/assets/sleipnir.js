@@ -7,7 +7,14 @@ import {GLTFLoader} from "../loaders/GLTFLoader.js";
 const envIntensity = 1.0;
 
 export default class Sleipnir {
-    static loadSleipnir(root, envMap) {
+    modelReady = false;
+    model;
+    mixer = THREE.AnimationMixer;
+    clock = new THREE.Clock();
+
+    constructor(root, envMap) {
+
+        // NOTE: AO ruins model. Does not work well out of the box in Three JS. Even whites makes the model dark. Why?!?!
         let hyperDetail = new THREE.MeshStandardMaterial({
             map: new TextureLoader().load("resources/textures/Sleipnir/HyperDetailRoof_albedo_alpha.jpg"),
             metalness: 1.0,
@@ -100,7 +107,6 @@ export default class Sleipnir {
                 model.getObjectByName("OuterBody").material = outerBody;
                 model.getObjectByName("Headlights").material = headlights;
                 model.getObjectByName("RearLights").material = rearLights;
-    
             
                 model.traverse((child) => {
                     if (child.isMesh) {
@@ -122,19 +128,44 @@ export default class Sleipnir {
                 hlLeft.add(hlLeft.target);
                 hlLeft.target.position.set(12, 0, 100);
     
-                model.add(hlRight);
-                model.add(hlLeft);
+                model.getObjectByName("BodySides").add(hlRight);
+                model.getObjectByName("BodySides").add(hlLeft);
                 hlRight.position.set(-0.92, 4.93, 8.83);
                 hlLeft.position.set(0.92, 4.93, 8.83);
-    
                 
                 model.position.x = -2.35;
-                root.add(model);
+                model.position.y = 10;
+                model.position.z = -10;
+                model.rotation.y = Math.PI/8;
+
+                root.add(object.scene);
+                this.model = model;
+                this.modelReady = true;
+                
+                //Animation
+                this.mixer = new THREE.AnimationMixer(this.model);
+
+                // The for all solution I found was typescript only. Hence:
+                this.mixer.clipAction(object.animations[0]).play();
+                this.mixer.clipAction(object.animations[1]).play();
+                this.mixer.clipAction(object.animations[2]).play();
+                this.mixer.clipAction(object.animations[3]).play();
+                this.mixer.clipAction(object.animations[4]).play();
+                this.mixer.clipAction(object.animations[5]).play();
+                this.mixer.clipAction(object.animations[6]).play();
+                this.mixer.clipAction(object.animations[7]).play();
+                this.mixer.clipAction(object.animations[8]).play();
             },
             // Following gives possibly false errors. Could be due to performance issues.
             /*(error) => {
                 console.error('Error loading model.', error);
             }*/
         );
+    }
+    animate() {
+        //orbitControls.update()
+        if (this.modelReady) {
+            this.mixer.update(this.clock.getDelta())
+        }  
     }
 }
