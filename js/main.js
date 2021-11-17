@@ -15,12 +15,11 @@ import {
 } from './lib/three.module.js';
 
 import WaterMaterial from './materials/WaterMaterial.js';
-import ModelLoader from './lib/ModelLoader.js'
+import ModelLoader from './loaders/ModelLoader.js'
 import Utilities from './lib/Utilities.js';
 import MouseLookController from './controls/MouseLookController.js';
 import TextureSplattingMaterial from './materials/TextureSplattingMaterial.js';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry.js';
-import { GLTFLoader } from './loaders/GLTFLoader.js';
 import { SimplexNoise } from './lib/SimplexNoise.js';
 import TimeCycleController from './controls/TimeCycleController.js';
 import WorldController from './controls/WorldController.js';
@@ -122,6 +121,7 @@ async function main() {
     });
 
     const terrain = new Mesh(terrainGeometry, terrainMaterial);
+    terrain.layers.enable(1);
 
     terrain.castShadow = true;
     terrain.receiveShadow = true;
@@ -136,12 +136,6 @@ async function main() {
 
     let bridge = new Bridge(scene, skybox);
     let sleip = new Sleipnir(scene, skybox);
-    
-    
-
-    // instantiate a GLTFLoader and load all models
-    const loader = new GLTFLoader();
-    ModelLoader.loadAllModels(scene,loader,width,terrainGeometry);
     
     // for testing
     scene.add(new AmbientLight(0xffffff, 0.3));
@@ -191,6 +185,10 @@ async function main() {
 
     // Setup WorldController
     const worldController = new WorldController(window);
+
+    // ModelLoader
+    const modelLoader = new ModelLoader(scene, terrain);
+    modelLoader.loadTrees();
 
     // Render loop
     let then = performance.now();
