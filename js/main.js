@@ -160,7 +160,7 @@ async function main() {
 
     // Setup clouds
     var cloudTab = []
-    for(let i = 0; i < 50; i++) {
+    for(let i = 0; i < 100; i++) {
         if(i == 0) {
             var cloud = generateBillboardClouds(true);
 
@@ -168,6 +168,9 @@ async function main() {
             var cloud = generateBillboardClouds(false);
         }
         cloudTab.push(cloud);
+
+        // Sett høyden til skyene
+        cloud.position.setY(80);
         scene.add(cloud);
     }
     scene.fog = new FogExp2(0xbbbbbb, 0.01);
