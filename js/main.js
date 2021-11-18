@@ -26,7 +26,7 @@ import WorldController from './controls/WorldController.js';
 import Bridge from './assets/Bridge.js';
 import {generateBillboardClouds, animateClouds} from './terrain/Cloud.js';
 import Sleipnir from './assets/sleipnir.js';
-import OldModelLoader from './lib/OldModelLoader.js';
+import NewModelLoader from './lib/NewModelLoader.js';
 
 async function main() {
 
@@ -135,8 +135,9 @@ async function main() {
     const skybox = cubeLoader.load([ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
     scene.environment, scene.background = skybox;
 
-    let bridge = new Bridge(scene, skybox);
-    let sleip = new Sleipnir(scene, skybox);
+    let bridge = new Bridge(scene, skybox,);
+    let sleip = new Sleipnir(scene, skybox, true, -2.35);
+    let sleipStatic = new Sleipnir(scene, skybox, false, 2.35);
     
     // for testing
     scene.add(new AmbientLight(0xffffff, 0.3));
@@ -192,9 +193,9 @@ async function main() {
     const modelLoader = new ModelLoader(scene, terrain);
     modelLoader.loadTrees();
 
-    const oldLoader = new OldModelLoader(scene, terrainGeometry, width);
-    oldLoader.loadGrass(.8);
-    oldLoader.loadRocks(10);
+    const newLoader = new NewModelLoader(scene, terrainGeometry, width);
+    newLoader.loadGrass(.8);
+    newLoader.loadRocks(10);
 
     // Render loop
     let then = performance.now();

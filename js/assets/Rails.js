@@ -9,15 +9,22 @@ const envIntensity = 1.0;
 export default class Rails{
     static loadRails(root, envMap, length) {
         let sleeperMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(0xff2222),
-            emissive: new THREE.Color(0xff4444),
-            emissiveIntensity: 0.7,
+            map: new TextureLoader().load("resources/textures/Track_Sleepers/norwegian_concrete_sleepers_BaseColor.jpg"),
+            metalness: 0.0,
+            roughnessMap: new TextureLoader().load("resources/textures/Track_Sleepers/norwegian_concrete_sleepers_Roughness.jpg"),
+            normalMap: new TextureLoader().load("resources/textures/Track_Sleepers/norwegian_concrete_sleepers_Normal.jpg"),
+            envMap: envMap,
+            envMapIntensity: envIntensity,
         });
 
         let railMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(0x22ff22),
-            emissive: new THREE.Color(0x44ff44),
-            emissiveIntensity: 0.7,
+            map: new TextureLoader().load("resources/textures/Track_Sleepers/60e1_BaseColor.jpg"),
+            metalness: 1.0,
+            metalnessMap: new TextureLoader().load("resources/textures/Track_Sleepers/60e1_Metallic.jpg"),
+            roughnessMap: new TextureLoader().load("resources/textures/Track_Sleepers/60e1_Roughness.jpg"),
+            normalMap: new TextureLoader().load("resources/textures/Track_Sleepers/60e1_Normal.jpg"),
+            envMap: envMap,
+            envMapIntensity: envIntensity,
         });
 
         length = length/2;

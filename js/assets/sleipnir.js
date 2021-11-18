@@ -12,7 +12,7 @@ export default class Sleipnir {
     mixer = THREE.AnimationMixer;
     clock = new THREE.Clock();
 
-    constructor(root, envMap) {
+    constructor(root, envMap, light, x, z) {
 
         // NOTE: AO ruins model. Does not work well out of the box in Three JS. Even whites makes the model dark. Why?!?!
         let hyperDetail = new THREE.MeshStandardMaterial({
@@ -96,7 +96,7 @@ export default class Sleipnir {
         const loader = new GLTFLoader();
     
         loader.load(
-            "resources/models/tronds_stuff/sleipnir.gltf",
+            "resources/models/tronds_stuff/sleipnir.glb",
             (object) => {
                 const model = object.scene;
                 model.getObjectByName("BodySides").material = bodySides;
@@ -113,33 +113,35 @@ export default class Sleipnir {
                         child.castShadow = true;
                         child.receiveShadow = true;
                     }
-                })
+                });
+
+                if(light){
+                    const hlColor = 0x9999ff;
+                    const flIntensity = 100;
+                    const hlDistance = 300;
+                    const hlRight = new THREE.SpotLight(hlColor, flIntensity, hlDistance, 0.3, 1.0);
+                    const hlLeft = new THREE.SpotLight(hlColor, flIntensity, hlDistance, 0.3, 1.0);
+        
+                    hlLeft.castShadow = true;
+                    hlRight.castShadow = true;
+                    hlRight.add(hlRight.target);
+                    hlRight.target.position.set(-12, 0, 100);
+                    hlLeft.add(hlLeft.target);
+                    hlLeft.target.position.set(12, 0, 100);
+        
+                    model.getObjectByName("BodySides").add(hlRight);
+                    model.getObjectByName("BodySides").add(hlLeft);
+                    hlRight.position.set(-0.92, 4.93, 8.83);
+                    hlLeft.position.set(0.92, 4.93, 8.83);
+                }
                 
-                const hlColor = 0x9999ff;
-                const flIntensity = 100;
-                const hlDistance = 300;
-                const hlRight = new THREE.SpotLight(hlColor, flIntensity, hlDistance, 0.3, 1.0);
-                const hlLeft = new THREE.SpotLight(hlColor, flIntensity, hlDistance, 0.3, 1.0);
-    
-                hlLeft.castShadow = true;
-                hlRight.castShadow = true;
-                hlRight.add(hlRight.target);
-                hlRight.target.position.set(-12, 0, 100);
-                hlLeft.add(hlLeft.target);
-                hlLeft.target.position.set(12, 0, 100);
-    
-                model.getObjectByName("BodySides").add(hlRight);
-                model.getObjectByName("BodySides").add(hlLeft);
-                hlRight.position.set(-0.92, 4.93, 8.83);
-                hlLeft.position.set(0.92, 4.93, 8.83);
-                
-                model.position.x = -2.35;
+                model.position.x = x;//-2.35;
                 model.position.y = 10;
                 model.position.z = -10;
                 model.rotation.y = Math.PI/8;
 
-                root.add(object.scene);
                 this.model = model;
+                root.add(this.model);
                 this.modelReady = true;
                 
                 //Animation
