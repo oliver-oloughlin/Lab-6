@@ -26,6 +26,7 @@ import WorldController from './controls/WorldController.js';
 import Bridge from './assets/Bridge.js';
 import {generateBillboardClouds, animateClouds} from './terrain/Weather.js';
 import Sleipnir from './assets/sleipnir.js';
+import OldModelLoader from './lib/OldModelLoader.js';
 
 async function main() {
 
@@ -167,7 +168,7 @@ async function main() {
         cloudTab.push(cloud);
 
         // Sett høyden til skyene
-        cloud.position.setY(80);
+        cloud.position.setY(60);
         scene.add(cloud);
     }
     scene.fog = new FogExp2(0xbbbbbb, 0.01);
@@ -190,6 +191,10 @@ async function main() {
     // ModelLoader
     const modelLoader = new ModelLoader(scene, terrain);
     modelLoader.loadTrees();
+
+    const oldLoader = new OldModelLoader(scene, terrainGeometry, width);
+    oldLoader.loadGrass(.8);
+    oldLoader.loadRocks(10);
 
     // Render loop
     let then = performance.now();
