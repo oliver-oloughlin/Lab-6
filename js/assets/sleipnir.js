@@ -124,6 +124,10 @@ export default class Sleipnir {
         
                     hlLeft.castShadow = true;
                     hlRight.castShadow = true;
+                    hlLeft.shadow.mapSize.height = 128;
+                    hlLeft.shadow.mapSize.width = 128;
+                    hlRight.shadow.mapSize.height = 128;
+                    hlRight.shadow.mapSize.width = 128;
                     hlRight.add(hlRight.target);
                     hlRight.target.position.set(-12, 0, 100);
                     hlLeft.add(hlLeft.target);
