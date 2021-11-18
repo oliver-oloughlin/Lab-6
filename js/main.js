@@ -11,7 +11,7 @@ import {
     PlaneBufferGeometry,
     CubeTextureLoader,
     CameraHelper,
-    FogExp2, Raycaster, Vector3,
+    FogExp2, Raycaster, Vector3, ArrowHelper,
 } from './lib/three.module.js';
 
 import WaterMaterial from './materials/WaterMaterial.js';

@@ -1,5 +1,5 @@
 import { GLTFLoader } from "./GLTFLoader.js";
-import { Raycaster, Vector3 } from "../lib/three.module.js";
+import { ArrowHelper, Color, Raycaster, Vector3 } from "../lib/three.module.js";
 
 export default class ModelLoader {
 
@@ -29,14 +29,16 @@ export default class ModelLoader {
                 for (let x = -hwidth; x < hwidth; x += step) {
                     for (let z = -hwidth; z < hwidth; z += step) {
 
-                        const originVec = new Vector3(x, this.terrain.geometry.hight + 1, z);
+                        const originVec = new Vector3(x, this.terrain.geometry.height + 1, z);
 
-                        let raycaster = new Raycaster({
+                        const raycaster = new Raycaster({
                             origin: originVec,
                             direction: directionVec,
                             near: 0,
                             far: 1000,
                         });
+
+                        //this.scene.add(new ArrowHelper(directionVec, originVec, 10, 0xffff00));
 
                         raycaster.layers.set(1);
 
@@ -68,9 +70,11 @@ export default class ModelLoader {
                                 const k2 = intersect.distance;
                                 const h = Math.sqrt(k1*k1 + k2*k2);
 
-                                const tempDirVec = new Vector3(rx, -h, rz);
+                                const tempDirVec = new Vector3(rx, -h, rz).normalize();
                                 raycaster.set(originVec, tempDirVec);
-                                const tempIntersects = raycaster.intersectObject(this.terrain, false);
+                                const tempIntersects = raycaster.intersectObject(this.scene, true);
+
+                                this.scene.add(new ArrowHelper(tempDirVec, originVec, 10, 0xffff00));
 
                                 if (tempIntersects.length === 0) continue;
 

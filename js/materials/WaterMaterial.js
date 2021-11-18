@@ -47,7 +47,7 @@ export default class WaterMaterial extends ShaderMaterial {
             const vec3 color = vec3(0.2, 0.5, 0.6);
             const float shininess = 20.0;
             const vec3 specularColor = vec3(0.2, 0.2, 0.2);
-            const float timeSpeed = 0.0002;
+            const float timeSpeed = 0.0004;
             const float alphaSpeed = 0.05;
             const float fidelity = 12.0;
 
