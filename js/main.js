@@ -24,7 +24,7 @@ import { SimplexNoise } from './lib/SimplexNoise.js';
 import TimeCycleController from './controls/TimeCycleController.js';
 import WorldController from './controls/WorldController.js';
 import Bridge from './assets/Bridge.js';
-import {generateBillboardClouds, animateClouds} from './terrain/Weather.js';
+import {generateBillboardClouds, animateClouds} from './terrain/Cloud.js';
 import Sleipnir from './assets/sleipnir.js';
 import OldModelLoader from './lib/OldModelLoader.js';
 

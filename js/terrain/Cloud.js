@@ -9,14 +9,12 @@ export function generateBillboardClouds() {
     var pX = Math.random() * -130 + 60;
     var pY = Math.random() * 10 + 60;
     var pZ = Math.random() * -130 + 60;
-    var cloudTexture = new TextureLoader().load('resources/textures/Cloud/cloud4.png');
+    var cloudTexture = new TextureLoader().load('resources/textures/Cloud/cloud.png');
 
     var material = new SpriteMaterial({
         map: cloudTexture,
         transparent: true,
-        opacity: 0.5,
-        depthTest: true,
-        depthWrite: true,
+        opacity: 0.5
     })
 
     var cloud = new Sprite(material);
@@ -28,7 +26,7 @@ export function generateBillboardClouds() {
 }
 
 export function animateClouds(cloudTab) {
-    for(let j = 0; j < cloudTab.length; j++) {
-        cloudTab[j].material.rotation += 0.001;
+    for(let i = 0; i < cloudTab.length; i++) {
+        cloudTab[i].material.rotation += 0.001;
     }
 }
