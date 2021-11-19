@@ -10,11 +10,10 @@ export default class WaterMaterial extends ShaderMaterial {
 
             precision mediump float;
 
-            uniform vec3 sunPosition;
             uniform float PI;
             uniform float time;
 
-            varying vec2 texcoord;
+            out vec2 texcoord;
             out vec3 pos;
             out vec3 sunPos;
 
@@ -30,8 +29,6 @@ export default class WaterMaterial extends ShaderMaterial {
             void main() {
 
                 pos = cameraPosition - position;
-
-                sunPos = sunPosition - position;
 
                 texcoord = uv.xy;
 
@@ -52,13 +49,12 @@ export default class WaterMaterial extends ShaderMaterial {
             uniform sampler2D alphaMap;
             uniform vec3 sunPosition;
 
-            varying vec2 texcoord;
+            in vec2 texcoord;
             in vec3 pos;
-            in vec3 sunPos;
 
             const vec3 color = vec3(0.604, 0.867, 0.851);
             const float shininess = 20.0;
-            const vec3 specularColor = vec3(0.2, 0.2, 0.2);
+            const vec3 specularColor = vec3(1.0, 1.0, 1.0);
             const float timeSpeed = 0.0002;
             const float alphaSpeed = 0.05;
             const float fidelity = 12.0;
@@ -68,13 +64,15 @@ export default class WaterMaterial extends ShaderMaterial {
             }
 
             vec3 totalColor(vec3 normal) {
-                vec3 lightDirection = normalize(sunPos);
+
+                vec3 lightDirection = normalize(sunPosition);
                 float lambertian = clamp(dot(lightDirection, normal), 0.0, 1.0);
 
                 vec3 reflectDirection = normalize(reflect(-lightDirection, normal));
                 vec3 viewDirection = normalize(-pos);
 
                 vec3 ambient = 0.2 * color;
+
                 float specular = 0.0;
                 if (lambertian > 0.0) {
                     float specAngle = max(dot(reflectDirection, viewDirection), 0.0);
