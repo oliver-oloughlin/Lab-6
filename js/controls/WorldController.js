@@ -18,10 +18,7 @@ export default class WorldController {
         window.addEventListener('click', (e) => {
 
             const raycaster = new Raycaster();
-            const mouse = new Vector2();
-
-            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            const mouse = new Vector2(0,0);
 
             raycaster.setFromCamera(mouse, camera);
             raycaster.layers.set(1);
@@ -37,7 +34,7 @@ export default class WorldController {
                 console.log('NO INTERSECT');
             }
 
-        })
+        });
 
     }
 
