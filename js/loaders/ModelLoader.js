@@ -1,7 +1,14 @@
+import * as THREE from "../lib/three.module.js";
 import { GLTFLoader } from "./GLTFLoader.js";
 import { ArrowHelper, Color, Raycaster, Vector3 } from "../lib/three.module.js";
 
 export default class ModelLoader {
+
+    treeMat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(0x229922),
+        emissive: new THREE.Color(0x449944),
+        emissiveIntensity: 0.3,
+    });
 
     constructor(scene, terrain) {
 
@@ -25,6 +32,7 @@ export default class ModelLoader {
                     if (child.isMesh) {
                         child.castShadow = true;
                         child.receiveShadow = true;
+                        child.material = this.treeMat;
                     }
                 });
                 
