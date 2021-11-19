@@ -72,7 +72,7 @@ export default class Skybox extends ShaderMaterial{
                 //vec2 correctedY = y / max(0.0, 1.0) * vec2(1920.0, 1080.0);
                 //vec2 correctedY = y / max(vPosition.x, vPosition.y) * vec2(1920.0, 1080.0);
 
-                float zenith = zenithDensity(pos.y); // krysser matrise x og y
+                float zenith = zenithDensity(pos.y);
                 float sunPointDistanceMultiplier = clamp(length(max(correctedY.y + multiScatterPhase - zenithOffset, 0.0)), 0.0, 1.0);
 
                 float rayleightMult = rayleighMultiplier(pos, correctedY);
@@ -105,7 +105,7 @@ export default class Skybox extends ShaderMaterial{
                 vec3 position = vPosition.xyz / max(vPosition.x, max(vPosition.y, vPosition.z)) * 2.0;
 
                 //hent fra directional light
-                vec3 lightPosition = vec3(0.5, 0.5, 0.5) * 2.0;
+                vec3 lightPosition = vec3(0.0, 0.9, 0.0) * 2.0;
 
                 vec3 color = atmosphericScattering(position, lightPosition);
                 color = reinhardJodie(color);
