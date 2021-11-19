@@ -20,8 +20,8 @@ export default class WaterMaterial extends ShaderMaterial {
 
             const float timeSpeed = 0.00004;
             const float waveSpeed = 5.0;
-            const float waveFrequency = 2.0;
-            const float offsetAmplitude = 0.3;
+            const float waveFrequency = 3.0;
+            const float offsetAmplitude = 0.1;
 
             float modulo(float a, float b) {
                 return a - (b * floor(a/b));

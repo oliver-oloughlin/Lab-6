@@ -28,7 +28,10 @@ export default class WorldController {
             if (intersects.length !== 0) {
 
                 const point = intersects[0].point;
-                this.modelLoader.putTree(point);
+
+                if (point.y > 3) {
+                    this.modelLoader.putTree(point);
+                }
 
             } else {
                 console.log('NO INTERSECT');
