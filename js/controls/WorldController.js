@@ -17,8 +17,6 @@ export default class WorldController {
 
         window.addEventListener('click', (e) => {
 
-            console.log("CLICK");
-
             const raycaster = new Raycaster();
             const mouse = new Vector2();
 
