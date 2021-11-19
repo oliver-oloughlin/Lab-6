@@ -10,14 +10,28 @@ export default class WaterMaterial extends ShaderMaterial {
 
             precision mediump float;
 
-            uniform float time;
             uniform vec3 sunPosition;
+            uniform float PI;
+            uniform float time;
 
             varying vec2 texcoord;
             out vec3 pos;
             out vec3 sunPos;
 
+            const float timeSpeed = 0.00004;
+            const float waveSpeed = 5.0;
+            const float waveFrequency = 2.0;
+            const float offsetAmplitude = 0.3;
+
+            float modulo(float a, float b) {
+                return a - (b * floor(a/b));
+            }
+
             void main() {
+
+                float timeCycle = 2.0 * PI * modulo(time * timeSpeed, 1.0);
+
+                float offset = sin(timeCycle * waveSpeed + position.x * waveFrequency) * offsetAmplitude;
 
                 pos = cameraPosition - position;
 
@@ -25,7 +39,7 @@ export default class WaterMaterial extends ShaderMaterial {
 
                 texcoord = uv.xy;
 
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x, position.y, position.z + offset, 1.0);
 
             }
         `
