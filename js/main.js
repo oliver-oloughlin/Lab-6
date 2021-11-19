@@ -11,7 +11,8 @@ import {
     PlaneBufferGeometry,
     CubeTextureLoader,
     CameraHelper,
-    FogExp2, Raycaster, Vector3, ArrowHelper,
+    FogExp2,
+    SphereBufferGeometry,
 } from './lib/three.module.js';
 
 import WaterMaterial from './materials/WaterMaterial.js';
@@ -27,13 +28,14 @@ import Bridge from './assets/Bridge.js';
 import {generateBillboardClouds, animateClouds} from './terrain/Cloud.js';
 import Sleipnir from './assets/sleipnir.js';
 import NewModelLoader from './lib/NewModelLoader.js';
+import Skybox from './shaders/Skybox_failed_experimental.js';
 
 async function main() {
 
     const scene = new Scene();
 
-    const axesHelper = new AxesHelper(15);
-    scene.add(axesHelper);
+    //const axesHelper = new AxesHelper(15);
+    //scene.add(axesHelper);
 
     const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
@@ -142,7 +144,7 @@ async function main() {
     // for testing
     scene.add(new AmbientLight(0xffffff, 0.3));
 
-    scene.add( new CameraHelper( sun.shadow.camera ) );
+    //scene.add( new CameraHelper( sun.shadow.camera ) );
 
 
     renderer.physicallyCorrectLights = true;
@@ -193,6 +195,9 @@ async function main() {
     const newLoader = new NewModelLoader(scene, terrainGeometry, width);
     newLoader.loadGrass(.8);
     newLoader.loadRocks(10);
+
+    // Failed, experimental sky
+    //scene.add(new Mesh(new SphereBufferGeometry(width, 32, 32), new Skybox));
 
     // Setup WorldController
     const worldController = new WorldController(window, modelLoader, camera, scene);
