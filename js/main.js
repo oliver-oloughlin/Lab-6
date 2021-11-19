@@ -186,16 +186,15 @@ async function main() {
     water.translateY(3.0);
     water.rotateX(Math.PI/2)
 
-    // Setup WorldController
-    const worldController = new WorldController(window);
-
-    // ModelLoader
+    // Model loaders
     const modelLoader = new ModelLoader(scene, terrain);
-    modelLoader.loadTrees();
 
     const newLoader = new NewModelLoader(scene, terrainGeometry, width);
     newLoader.loadGrass(.8);
     newLoader.loadRocks(10);
+
+    // Setup WorldController
+    const worldController = new WorldController(window, modelLoader, camera, scene);
 
     // Render loop
     let then = performance.now();

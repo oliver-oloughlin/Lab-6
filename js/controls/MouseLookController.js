@@ -29,7 +29,7 @@ export default class MouseLookController {
         this.pitchQuaternion = new Quaternion();
         this.yawQuaternion = new Quaternion();
 
-        canvas.addEventListener('click', () => {
+        canvas.addEventListener('mouseover', () => {
             canvas.requestPointerLock();
         });
 

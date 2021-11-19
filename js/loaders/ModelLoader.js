@@ -11,7 +11,7 @@ export default class ModelLoader {
 
     }
 
-    loadTrees() {
+    putTree(point) {
 
         this.loader.load(
             // resource URL
@@ -19,83 +19,25 @@ export default class ModelLoader {
             // called when resource is loaded
             (object) => {
 
-                const directionVec = new Vector3(0, -1, 0);
-                const step = 20;
-                const hwidth = this.terrain.geometry.width / 2;
-                const radius = 10;
+                const tree = object.scene.children[0].clone();
 
-                console.log(hwidth);
-
-                for (let x = -hwidth; x < hwidth; x += step) {
-                    for (let z = -hwidth; z < hwidth; z += step) {
-
-                        const originVec = new Vector3(x, this.terrain.geometry.height + 1, z);
-
-                        const raycaster = new Raycaster({
-                            origin: originVec,
-                            direction: directionVec,
-                            near: 0,
-                            far: 1000,
-                        });
-
-                        //this.scene.add(new ArrowHelper(directionVec, originVec, 10, 0xffff00));
-
-                        raycaster.layers.set(1);
-
-                        const intersects = raycaster.intersectObject(this.scene, true);
-
-                        console.log("NOPE");
-                        
-                        if (intersects.length === 0) continue;
-
-                        console.log("YEP");
-
-                        const intersect = intersects.pop();
-
-                        for (let r = 1; r < radius; r++) {
-
-                            const c = 2 * Math.PI * r;
-
-                            for (let a = 0; a < c; a++) {
-
-                                if (Math.random() * radius < r) continue;
-
-                                const fracA = a / c;
-                                const sinx = Math.sin(fracA * 2 * Math.PI);
-                                const cosz = Math.cos(fracA * 2 * Math.PI);
-                                const rx = r * sinx;
-                                const rz = r * cosz;
-
-                                const k1 = r;
-                                const k2 = intersect.distance;
-                                const h = Math.sqrt(k1*k1 + k2*k2);
-
-                                const tempDirVec = new Vector3(rx, -h, rz).normalize();
-                                raycaster.set(originVec, tempDirVec);
-                                const tempIntersects = raycaster.intersectObject(this.scene, true);
-
-                                this.scene.add(new ArrowHelper(tempDirVec, originVec, 10, 0xffff00));
-
-                                if (tempIntersects.length === 0) continue;
-
-                                const tempIntersect = tempIntersects.pop();
-                                const point = tempIntersect.point();
-                                
-                                const tree = object.scene.children[0].clone();
-                                tree.traverse((child) => {
-                                    if (child.isMesh) {
-                                        child.castShadow = true;
-                                        child.receiveShadow = true;
-                                    }
-                                });
-                                tree.position = point;
-                                this.scene.add(tree);
-
-                            }
-                        }
-    
+                tree.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
                     }
-                }
+                });
+                
+                tree.position.x = point.x;
+                tree.position.y = point.y;
+                tree.position.z = point.z;
+
+                tree.rotation.y = Math.random() * (2 * Math.PI);
+
+                tree.scale.multiplyScalar(1 + Math.random() * 2);
+
+                this.scene.add(tree);
+                
             },
             (xhr) => {
                 console.log(((xhr.loaded / xhr.total) * 100) + '% loaded');
