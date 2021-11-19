@@ -16,14 +16,6 @@ export default class TimeCycleController {
 
     }
 
-    setTimeSpeed(timeSpeed) {
-        this.timeSpeed = timeSpeed;
-    }
-
-    setLightDistance(lightDistance) {
-        this.lightDistance = lightDistance;
-    }
-
     cycleTime(deltaTime) {
 
     this.pureTimeTotal += deltaTime;
@@ -38,7 +30,7 @@ export default class TimeCycleController {
     this.posX = sinx * this.lightDistance;
     this.posY = siny * this.lightDistance;
 
-    this.directionalLight.position.set(this.posX, this.posY)
+    this.directionalLight.position.set(this.posX, this.posY);
 
     }
 

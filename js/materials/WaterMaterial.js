@@ -15,7 +15,6 @@ export default class WaterMaterial extends ShaderMaterial {
 
             out vec2 texcoord;
             out vec3 pos;
-            out vec3 sunPos;
 
             const float timeSpeed = 0.00004;
             const float waveSpeed = 5.0;
@@ -44,7 +43,7 @@ export default class WaterMaterial extends ShaderMaterial {
             precision mediump float;
 
             uniform float time;
-            uniform sampler2D normalmap;
+            uniform sampler2D normalMap;
             uniform sampler2D flowMap;
             uniform sampler2D alphaMap;
             uniform vec3 sunPosition;
@@ -53,17 +52,17 @@ export default class WaterMaterial extends ShaderMaterial {
             in vec3 pos;
 
             const vec3 color = vec3(0.604, 0.867, 0.851);
-            const float shininess = 20.0;
+            const float shininess = 40.0;
             const vec3 specularColor = vec3(1.0, 1.0, 1.0);
-            const float timeSpeed = 0.0002;
+            const float timeSpeed = 0.0004;
             const float alphaSpeed = 0.05;
-            const float fidelity = 12.0;
+            const float fidelity = 20.0;
 
             float modulo(float a, float b) {
                 return a - (b * floor(a/b));
             }
 
-            vec3 totalColor(vec3 normal) {
+            vec3 totalLighting(vec3 normal) {
 
                 vec3 lightDirection = normalize(sunPosition);
                 float lambertian = clamp(dot(lightDirection, normal), 0.0, 1.0);
@@ -84,6 +83,7 @@ export default class WaterMaterial extends ShaderMaterial {
 
             void main() {
 
+                // To avoid tiling issues and increase fidelity by repeating textures instead of spreading them across the entire plane
                 vec2 tex = vec2((sin(texcoord.x * fidelity) + 1.0) / 2.0, (sin(texcoord.y * fidelity) + 1.0) / 2.0);
 
                 float timeShift = time * timeSpeed;
@@ -94,8 +94,8 @@ export default class WaterMaterial extends ShaderMaterial {
                 vec2 fd2 = fd * t2;
                 vec2 coord1 = tex + fd1;
                 vec2 coord2 = tex + fd2;
-                vec3 n1 = texture(normalmap, coord1).xyz;
-                vec3 n2 = texture(normalmap, coord2).xyz;
+                vec3 n1 = texture(normalMap, coord1).xyz;
+                vec3 n2 = texture(normalMap, coord2).xyz;
                 float mixFactor = abs(t1 - 0.5) * 2.0;
                 vec3 normal = normalize(mix(n1, n2, mixFactor));
 
@@ -105,7 +105,7 @@ export default class WaterMaterial extends ShaderMaterial {
                 float alpha = clamp(a, 0.5, 0.6);
 
                 // Final output
-                gl_FragColor = vec4(totalColor(normal), alpha);
+                gl_FragColor = vec4(totalLighting(normal), alpha);
 
             }
         `
@@ -118,7 +118,7 @@ export default class WaterMaterial extends ShaderMaterial {
 
             uniforms: {
                 time: { value: 0 },
-                nomalmap: { value: normalmap },
+                nomalMap: { value: normalmap },
                 flowMap: { value: flowMap },
                 alphaMap: { value: alphaMap },
                 PI: { value: Math.PI },
